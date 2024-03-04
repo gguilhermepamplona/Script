@@ -1,0 +1,1 @@
+Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression

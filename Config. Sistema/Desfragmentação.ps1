@@ -1,0 +1,1 @@
+Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume
