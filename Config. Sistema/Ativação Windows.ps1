@@ -1,3 +1,4 @@
+function AtivacaoWindows {
 $SO = (Get-CimInstance Win32_OperatingSystem).Caption
 
 $chaves = @{
@@ -27,4 +28,5 @@ if ($chaves.ContainsKey($SOEdicao)){
     slmgr /ato
 } else {
     Write-Host "Edição do sistema operacional não suportada ou não reconhecida." -ForegroundColor Red
+}
 }
