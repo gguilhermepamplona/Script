@@ -1,8 +1,21 @@
+function ConfigSistema {
 $SO = (Get-CimInstance Win32_OperatingSystem).Caption
 
 function AlterarHostname{
-    $NovoHostname = Read-Host "Nome do computador"
-    Rename-Computer -NewName $NovoHostname
+    $HostnameSN = Read-Host "Você deseja alterar o hostname? [S] [N]"
+    switch ($HostnameSN) {
+        "S" {
+            $NovoHostname = Read-Host "Nome do computador"
+            Rename-Computer -NewName $NovoHostname
+            Write-Host "Hostname alterado para $NovoHostname" -ForegroundColor Blue
+        }
+        "N" {
+            Write-Host "O hostname não será alterado!" -ForegroundColor Blue
+        }
+        Default {
+            Write-Host "Opção inválida" -ForegroundColor Red
+        }
+    }
 }
 
 function OOShutup{
@@ -223,3 +236,4 @@ function Configs {
 }
 
 Configs
+}
