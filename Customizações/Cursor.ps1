@@ -1,3 +1,4 @@
+function Cursor {
 $LinkCursor = "https://drive.google.com/uc?export=download&id=1bwRha4AnjOWcm1PHhVMHnx69KknQIGsl"
 $DirTemp = Join-Path -Path $env:USERPROFILE -ChildPath "AppData\Local\Temp\Cursor\"
 
@@ -40,3 +41,4 @@ Set-ItemProperty -Path 'HKCU:\Control Panel\Cursors' -Name UpArrow -Value 'C:\Wi
 Set-ItemProperty -Path 'HKCU:\Control Panel\Cursors' -Name Wait -Value 'C:\Windows\Cursors\macOS\Busy.ani' > $null
 
 Remove-Item -Path $DirTemp -Recurse -Force
+}

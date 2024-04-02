@@ -1,3 +1,4 @@
+function Wallpaper {
 $LinkWallpaper = "https://drive.google.com/uc?export=download&id=1rqt07IDCJeU6jjuv2tE5lHvQlwL3wEkC"
 # $NomeArquivo = [System.IO.Path]::GetFileName((New-Object System.Uri($LinkWallpaper)).LocalPath)
 
@@ -20,3 +21,4 @@ Add-Type -TypeDefinition @"
 $regPath = "HKCU:\Control Panel\Desktop"
 $regName = "WallPaper" 
 Set-ItemProperty -Path $regPath -Name $regName -Value $CaminhoArquivo
+}
