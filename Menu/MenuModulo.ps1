@@ -18,7 +18,7 @@ Import-Module -Name ps-menu -Force
 
 function MenuSistema {
 	$MenuSistema = @(
-		"Padronização Inicial",
+		"Configurações do sistema",
 		"Instalação de Programas",
 		"Desinstalação de Programas",
 		"Desfragmentação",
@@ -28,17 +28,17 @@ function MenuSistema {
 		Clear-Host
 		$Result = Menu -menuItems $MenuSistema
 		switch ($Result) {
-			"Padronização Inicial" {
-				Write-Host "Padronização Inicial"
-				Menu1
+			"Configurações do sistema" {
+				ConfigSistema
+				MenuSistema
 			}
 			"Instalação de Programas" {
-				Write-Host "Instalação de Programas"
-				Menu1
+				Write-Host "Instalação de Programas em desenvolvimento!"
+				MenuSistema
 			}
 			"Desinstalação de Programas" {
-				Write-Host "Desinstalação de Programas"
-				Menu1
+				Write-Host "Desinstalação de Programas em desenvolvimento!"
+				MenuSistema
 			}
 			"Desfragmentação" {
 				Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume
@@ -67,10 +67,11 @@ function MenuAtivacoes {
 		switch ($Result) {
 			"Windows" {
 				AtivacaoWindows
+				MenuAtivacoes
 			}
 			"Office" {
-				Write-Host "Ativador Office"
-				Menu1
+				Write-Host "Ativador do Office em desenvolvimento!"
+				MenuAtivacoes
 			}
 			"Voltar" {
 				Menu1
