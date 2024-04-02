@@ -10,6 +10,8 @@ Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/m
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Terminal.ps1" | Invoke-Expression
 # Configurações do Sistema
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Configura%C3%A7%C3%B5es%20sistema.ps1" | Invoke-Expression
+# Desinstalação de Apps
+Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Desinstala%C3%A7%C3%A3o%20apps.ps1" | Invoke-Expression
 
 if (-not (Get-Module -Name ps-menu -ListAvailable)) {
     Install-Module -Name ps-menu -Scope CurrentUser -Force
@@ -37,7 +39,7 @@ function MenuSistema {
 				MenuSistema
 			}
 			"Desinstalação de Programas" {
-				Write-Host "Desinstalação de Programas em desenvolvimento!"
+				DesinstalacaoApps
 				MenuSistema
 			}
 			"Desfragmentação" {

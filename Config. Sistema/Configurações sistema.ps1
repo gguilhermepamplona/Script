@@ -238,4 +238,16 @@ function ConfigSistema {
     }
 
     Configs
+    $DesinstalacaoAppsSN = Read-Host "Você deseja realizar a desinstalação de programas inicial? [S] [N]"
+    switch ($DesinstalacaoAppsSN) {
+        "S" {
+            DesinstalacaoApps
+        }
+        "N" {
+            Write-Host "Os programas não serão desinstalados." -ForegroundColor Blue
+        }
+        Default {
+            Write-Host "Opção inválida" -ForegroundColor Red
+        }
+    }
 }

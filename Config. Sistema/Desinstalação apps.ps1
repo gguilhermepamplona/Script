@@ -1,3 +1,4 @@
+function DesinstalacaoApps {
 # Desinstala o OneDrive
 function DesinstalarOnedriveConfigIni{
 	'set x86="%SYSTEMROOT%\System32\OneDriveSetup.exe"
@@ -91,4 +92,5 @@ function TerminandoConfigWinOnze {
 	Write-Host 'Verificando Apps' -ForegroundColor Blue
 	winget uninstall --id 'Microsoft.DevHome' --accept-source-agreements
 	winget uninstall --id 'Microsoft.OutlookForWindows_8wekyb3d8bbwe' --accept-source-agreements
+}
 }
