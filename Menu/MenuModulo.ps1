@@ -1,3 +1,4 @@
+$host.UI.RawUI.WindowTitle = "Script"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 # Ativação do Windows
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Ativa%C3%A7%C3%A3o%20Windows.ps1" | Invoke-Expression
@@ -7,6 +8,8 @@ Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/m
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Wallpaper.ps1" | Invoke-Expression
 # Terminal
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Terminal.ps1" | Invoke-Expression
+# Configurações do Sistema
+Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Configura%C3%A7%C3%B5es%20sistema.ps1" | Invoke-Expression
 
 if (-not (Get-Module -Name ps-menu -ListAvailable)) {
     Install-Module -Name ps-menu -Scope CurrentUser -Force
@@ -18,6 +21,8 @@ function MenuSistema {
 		"Padronização Inicial",
 		"Instalação de Programas",
 		"Desinstalação de Programas",
+		"Desfragmentação",
+		"CTT",
 		"Voltar"
 		)
 		Clear-Host
@@ -35,8 +40,17 @@ function MenuSistema {
 				Write-Host "Desinstalação de Programas"
 				Menu1
 			}
+			"Desfragmentação" {
+				Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume
+			}
+			"CTT" {
+				Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression
+			}
 			"Voltar" {
 				Menu1
+			}
+			Default {
+				Write-Host "Opção inválida" -ForegroundColor Red
 			}
 	}
 }
@@ -61,6 +75,9 @@ function MenuAtivacoes {
 			"Voltar" {
 				Menu1
 			}
+			Default {
+				Write-Host "Opção inválida" -ForegroundColor Red
+			}
 		}
 	}
 
@@ -77,18 +94,21 @@ function MenuCustomizacoes {
 	switch ($Result) {
 		"Cursor" {
 			Cursor
-			MenuCustomizacoe
+			MenuCustomizacoes
 		}
 		"Wallpaper" {
 			Wallpaper
-			MenuCustomizacoe
+			MenuCustomizacoes
 		}
 		"Terminal" {
 			Terminal
-			MenuCustomizacoe
+			MenuCustomizacoes
 		}
 		"Voltar" {
 			Menu1
+		}
+		Default {
+			Write-Host "Opção inválida" -ForegroundColor Red
 		}
 	}
 }
@@ -114,6 +134,9 @@ function Menu1 {
 		}
 		"Sair" {
 			Exit-PSHostProcess
+		}
+		Default {
+			Write-Host "Opção inválida" -ForegroundColor Red
 		}
 	}
 }
