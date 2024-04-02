@@ -1,3 +1,4 @@
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 # Ativação do Windows
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Ativa%C3%A7%C3%A3o%20Windows.ps1" | Invoke-Expression
 # Cursor
@@ -10,7 +11,7 @@ Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/m
 if (-not (Get-Module -Name ps-menu -ListAvailable)) {
     Install-Module -Name ps-menu -Scope CurrentUser -Force
 }
-Import-Module -Name ps-menu
+Import-Module -Name ps-menu -Force
 
 function MenuSistema {
 	$MenuSistema = @(
@@ -76,12 +77,15 @@ function MenuCustomizacoes {
 	switch ($Result) {
 		"Cursor" {
 			Cursor
+			MenuCustomizacoe
 		}
 		"Wallpaper" {
 			Wallpaper
+			MenuCustomizacoe
 		}
 		"Terminal" {
 			Terminal
+			MenuCustomizacoe
 		}
 		"Voltar" {
 			Menu1
