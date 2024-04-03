@@ -1,3 +1,5 @@
+# https://abre.ai/psscr
+Install-PackageProvider -Name NuGet -Force
 $host.UI.RawUI.WindowTitle = "Script"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 # Ativação do Windows
@@ -18,43 +20,58 @@ if (-not (Get-Module -Name ps-menu -ListAvailable)) {
 }
 Import-Module -Name ps-menu -Force
 
+
+function OpcoesMenu([hashtable]$opcoes) {
+	Clear-Host
+	$result = Menu -menuItems $opcoes.Keys
+	if ($opcoes.ContainsKey($result)) {
+		& $opcoes[$result]
+	} else {Write-Host "Opção Inválida" -ForegroundColor Red; OpcoesMenu}
+}
+
+
+
+
 function MenuSistema {
-	$MenuSistema = @(
-		"Configurações do sistema",
-		"Instalação de Programas",
-		"Desinstalação de Programas",
-		"Desfragmentação",
-		"CTT",
-		"Voltar"
-		)
-		Clear-Host
-		$Result = Menu -menuItems $MenuSistema
-		switch ($Result) {
-			"Configurações do sistema" {
-				ConfigSistema
-				MenuSistema
-			}
-			"Instalação de Programas" {
-				Write-Host "Instalação de Programas em desenvolvimento!"
-				MenuSistema
-			}
-			"Desinstalação de Programas" {
-				DesinstalacaoApps
-				MenuSistema
-			}
-			"Desfragmentação" {
-				Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume
-			}
-			"CTT" {
-				Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression
-			}
-			"Voltar" {
-				Menu1
-			}
-			Default {
-				Write-Host "Opção inválida" -ForegroundColor Red
-			}
+	$MenuSistema = @{
+		"Configurações do sistema" = {ConfigSistema ; MenuSistema}
+		"Instalação de Programas" = {Write-Host "Instalação de Programas em desenvolvimento!" ; MenuSistema}
+		"Desinstalação de Programas" = {DesinstalacaoApps ; MenuSistema}
+		"Desfragmentação" = {Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume ; MenuSistema}
+		"CTT" = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}
+		"Voltar" = {Menu1}
 	}
+	OpcoesMenu -opcoes $MenuSistema
+	# 	Clear-Host
+	# 	$Result = Menu -menuItems $MenuSistema
+	# 	switch ($Result) {
+	# 		"Configurações do sistema" {
+	# 			ConfigSistema
+	# 			MenuSistema
+	# 		}
+	# 		"Instalação de Programas" {
+	# 			Write-Host "Instalação de Programas em desenvolvimento!"
+	# 			MenuSistema
+	# 		}
+	# 		"Desinstalação de Programas" {
+	# 			DesinstalacaoApps
+	# 			MenuSistema
+	# 		}
+	# 		"Desfragmentação" {
+	# 			Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume
+	# 			MenuSistema
+	# 		}
+	# 		"CTT" {
+	# 			Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression
+	# 			MenuSistema
+	# 		}
+	# 		"Voltar" {
+	# 			Menu1
+	# 		}
+	# 		Default {
+	# 			Write-Host "Opção inválida" -ForegroundColor Red
+	# 		}
+	# }
 }
 
 function MenuAtivacoes {
