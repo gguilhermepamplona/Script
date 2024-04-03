@@ -1,6 +1,9 @@
 # https://abre.ai/psscr
-Install-PackageProvider -Name NuGet -Force
-$host.UI.RawUI.WindowTitle = "Script"
+if(-not(Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)){
+	Write-Host "Instalando NuGet..."
+	Install-PackageProvider -Name NuGet -Force
+}
+$host.UI.RawUI.WindowTitle = "PS-Script"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 # Ativação do Windows
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Ativa%C3%A7%C3%A3o%20Windows.ps1" | Invoke-Expression
@@ -20,145 +23,94 @@ if (-not (Get-Module -Name ps-menu -ListAvailable)) {
 }
 Import-Module -Name ps-menu -Force
 
-
-function OpcoesMenu([hashtable]$opcoes) {
+function Cabecalho($menu, $submenu) {
 	Clear-Host
-	$result = Menu -menuItems $opcoes.Keys
-	if ($opcoes.ContainsKey($result)) {
-		& $opcoes[$result]
-	} else {Write-Host "Opção Inválida" -ForegroundColor Red; OpcoesMenu}
+	Write-Host "=========-----========="
+	Write-Host "       PS-Script"
+	Write-Host ""
+	Write-Host -NoNewline $menu
+	Write-Host $submenu -ForegroundColor Blue
+	Write-Host ""
 }
 
-
-
-
-function MenuSistema {
-	$MenuSistema = @{
-		"Configurações do sistema" = {ConfigSistema ; MenuSistema}
-		"Instalação de Programas" = {Write-Host "Instalação de Programas em desenvolvimento!" ; MenuSistema}
-		"Desinstalação de Programas" = {DesinstalacaoApps ; MenuSistema}
-		"Desfragmentação" = {Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume ; MenuSistema}
-		"CTT" = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}
-		"Voltar" = {Menu1}
-	}
-	OpcoesMenu -opcoes $MenuSistema
-	# 	Clear-Host
-	# 	$Result = Menu -menuItems $MenuSistema
-	# 	switch ($Result) {
-	# 		"Configurações do sistema" {
-	# 			ConfigSistema
-	# 			MenuSistema
-	# 		}
-	# 		"Instalação de Programas" {
-	# 			Write-Host "Instalação de Programas em desenvolvimento!"
-	# 			MenuSistema
-	# 		}
-	# 		"Desinstalação de Programas" {
-	# 			DesinstalacaoApps
-	# 			MenuSistema
-	# 		}
-	# 		"Desfragmentação" {
-	# 			Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume
-	# 			MenuSistema
-	# 		}
-	# 		"CTT" {
-	# 			Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression
-	# 			MenuSistema
-	# 		}
-	# 		"Voltar" {
-	# 			Menu1
-	# 		}
-	# 		Default {
-	# 			Write-Host "Opção inválida" -ForegroundColor Red
-	# 		}
-	# }
+function OpcoesMenu([array]$opcoes) {
+	$result = Menu -menuItems ($opcoes.o)
+	& ($opcoes | Where-Object {$_.o -eq $result}).a
 }
 
-function MenuAtivacoes {
-	$MenuAtivacoes = @(
-		"Windows",
-		"Office",
-		"Voltar"
-		)
-		Clear-Host
-		$Result = Menu -menuItems $MenuAtivacoes
-
-		switch ($Result) {
-			"Windows" {
-				AtivacaoWindows
-				MenuAtivacoes
-			}
-			"Office" {
-				Write-Host "Ativador do Office em desenvolvimento!"
-				MenuAtivacoes
-			}
-			"Voltar" {
-				Menu1
-			}
-			Default {
-				Write-Host "Opção inválida" -ForegroundColor Red
-			}
-		}
-	}
-
-function MenuCustomizacoes {
-	$MenuCustomizacoes = @(
-		"Cursor",
-		"Wallpaper",
-		"Terminal",
-		"Voltar"
-	)
-	Clear-Host
-	$Result = Menu -menuItems $MenuCustomizacoes
-
-	switch ($Result) {
-		"Cursor" {
-			Cursor
-			MenuCustomizacoes
-		}
-		"Wallpaper" {
-			Wallpaper
-			MenuCustomizacoes
-		}
-		"Terminal" {
-			Terminal
-			MenuCustomizacoes
-		}
-		"Voltar" {
-			Menu1
-		}
-		Default {
-			Write-Host "Opção inválida" -ForegroundColor Red
-		}
-	}
-}
 
 function Menu1 {
-	$Menu = @(
-		"Sistema",
-		"Ativações",
-		"Customizações",
-		"Sair"
-	)
-	Clear-Host
-	$Result = Menu -menuItems $Menu
-	switch ($Result) {
-		"Sistema" {
-			MenuSistema
-		}
-		"Ativações" {
-			MenuAtivacoes
-		}
-		"Customizações" {
-			MenuCustomizacoes
-		}
-		"Sair" {
-			Exit-PSHostProcess
-		}
-		Default {
-			Write-Host "Opção inválida" -ForegroundColor Red
-		}
-	}
+	Cabecalho -submenu "Menu"
+	$OpcoesMenu = @(
+		@{o = "Sistema" ; a = {MenuSistema}},
+		@{o = "Ativações" ; a = {MenuAtivacoes}},
+		@{o = "Customizações" ; a = {MenuCustomizacoes}}
+		@{o = "Sair" ; a = {Sair}}
+	) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+	OpcoesMenu -opcoes $OpcoesArray
 }
+	function MenuSistema {
+		Cabecalho -menu "Menu > " -submenu "Sistema"
+		$OpcoesMenu = @(
+			@{o = "Configurações do sistema" ; a = {MenuConfigSistema}},
+			@{o = "Desinstalação de Programas" ; a = {DesinstalacaoApps ; MenuSistema}}
+			@{o = "Instalação de Programas" ; a = {MenuSistema}},
+			@{o = "Desfragmentação" ; a = {Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume ; MenuSistema}},
+			@{o = "CTT" ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
+			@{o = "Voltar" ; a = {Menu1}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+	}
+		function MenuConfigSistema {
+			Cabecalho -menu "Menu > Sistema > " -submenu "Configurações do sistema"
+			$OpcoesMenu = @(
+				@{o = "Iniciar configuração" ; a = {Configs ; MenuConfigSistema}},
+				@{o = "Alterar Hostname" ; a = {AlterarHostname ; MenuConfigSistema}},
+				@{o = "Selecionar" ; a = {MenuSelecConfigSistema}},
+				@{o = "Voltar" ; a = {MenuSistema}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+		}
+			function MenuSelecConfigSistema {
+				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Selecionar"
+				$OpcoesMenu = @(
+				@{o = "Iniciar" ; a = {Configs ; MenuConfigSistema}},
+				@{o = "Selecionar opções" ; a = {MenuSelecConfigSistema}},
+				@{o = "Voltar" ; a = {MenuSistema}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+			}
+
+	function MenuAtivacoes {
+		Cabecalho -menu "Menu > " -submenu "Ativações"
+		$OpcoesMenu = @(
+			@{o = "Windows" ; a = {AtivacaoWindows ; MenuAtivacoes}},
+			@{o = "Office" ; a = {MenuAtivacoes}},
+			@{o = "Voltar" ; a = {Menu1}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+		}
+
+	function MenuCustomizacoes {
+		Cabecalho -menu "Menu > " -submenu "Customizações"
+		$OpcoesMenu = @(
+			@{o = "Cursor" ; a = {Cursor ; MenuCustomizacoes}},
+			@{o = "Wallpaper" ; a = {Wallpaper ; MenuCustomizacoes}},
+			@{o = "Terminal" ; a = {Terminal ; MenuCustomizacoes}}
+			@{o = "Voltar" ; a = {Menu1}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+	}
+
+	function Sair {
+		Cabecalho -menu "Menu > " -submenu "Sair"
+		Write-Host "Tem certeza que deseja sair?" -ForegroundColor Yellow
+		$OpcoesMenu = @(
+			@{o = "Sim" ; a = {Clear-Host ; Exit-PSHostProcess}}
+			@{o = "Não" ; a = {Menu1}}
+		)  ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+	}
+
 
 Menu1

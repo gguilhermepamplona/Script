@@ -1,11 +1,6 @@
-function ConfigSistema {
-    Write-Host "Configurando o sistema..." -ForegroundColor Green
-
-    $SO = (Get-CimInstance Win32_OperatingSystem).Caption
-
-    function AlterarHostname{
-        $HostnameSN = Read-Host "Você deseja alterar o hostname? [S] [N]"
-        switch ($HostnameSN) {
+function AlterarHostname{
+    $HostnameSN = Read-Host "Você deseja alterar o hostname? [S] [N]"
+    switch ($HostnameSN) {
             "S" {
                 $NovoHostname = Read-Host "Nome do computador"
                 Rename-Computer -NewName $NovoHostname
@@ -26,7 +21,7 @@ function ConfigSistema {
         Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
         ./OOSU10.exe OOSU.cfg /quiet
     }
-
+    
     # Desativa aceleração do mouse
     function ConfigMouse {
         Set-ItemProperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseSpeed -Value 0
@@ -38,7 +33,7 @@ function ConfigSistema {
     function ConfigTouchpad {
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad' -Name AAPThreshold -Value 0
     }
-
+    
     # Desativa o UAC. 0 = Desativado e 1 = Ativado
     function ConfigControleContaUsuario {
         Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name EnableLUA -Value 0
@@ -48,7 +43,7 @@ function ConfigSistema {
     function ConfigLimiteCaracteres {
         Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name LongPathsEnabled -Value 1
     }
-
+    
     # Desativa o Snipping Tool da tecla PrintScreen para utilização do LightShot
     function ConfigPrintScreen {
         Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name PrintScreenKeyForSnippingEnabled -Value 0
@@ -62,10 +57,11 @@ function ConfigSistema {
         Set-ItemProperty -Path 'HKCU:\Control Panel\Accessibility\StickyKeys' -Name Flags -Value 26 -ErrorAction Ignore
         Set-ItemProperty -Path 'HKCU:\Control Panel\Accessibility\Keyboard Response' -Name Flags -Value 26 -ErrorAction Ignore
     }
-
+    
     # Desativa opções de tecla de aderência e de filtro
     # TODO Verificar a diferença de W10/W11 e desativar atalhos do teclado de teclas de aderência, alternância e filtro
     function ConfigDigitacao {
+        $SO = (Get-CimInstance Win32_OperatingSystem).Caption
         if ($SO -like "*Windows 10*"){
             If (!(Test-Path 'HKCU:\Software\Microsoft\input\Settings')) {
                 New-Item -Path 'HKCU:\Software\Microsoft\input\Settings' -Force -ErrorAction Stop | Out-Null
@@ -83,9 +79,10 @@ function ConfigSistema {
             New-ItemProperty -Path 'HKCU:\Software\Policies\Microsoft\Control Panel\International' -Name TurnOffHighlightMisspelledWords -PropertyType DWORD -Value 1
         }
     }
-
+    
     # Configura a barra de tarefas
     function ConfigTaskBar {
+        $SO = (Get-CimInstance Win32_OperatingSystem).Caption
         if ($SO -like "*Windows 11*"){
             Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Start" -Name 'VisiblePlaces' -Value ([byte[]](0x86,0x08,0x73,0x52,0xaa,0x51,0x43,0x42,0x9f,0x7b,0x27,0x76,0x58,0x46,0x59,0xd4,0xbc,0x24,0x8a,0x14,0x0c,0xd6,0x89,0x42,0xa0,0x80,0x6e,0xd9,0xbb,0xa2,0x48,0x82))
             Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name 'ShowCopilotButton' -Value 0 -force
@@ -97,6 +94,7 @@ function ConfigSistema {
 
     # Configura modo de jogo
     function ConfigGameMode {
+        $SO = (Get-CimInstance Win32_OperatingSystem).Caption
         if($SO -like "*Windows 10*"){
             Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR' -Name AppCaptureEnabled -Value 0 -ErrorAction Ignore
         }
@@ -104,7 +102,7 @@ function ConfigSistema {
         Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\GameBar' -Name UseNexusForGameBarEnabled -ErrorAction Ignore
         New-ItemProperty -Path 'HKCU:\Software\Microsoft\GameBar' -Name UseNexusForGameBarEnabled -PropertyType DWORD -Value 0 -ErrorAction Ignore
     }
-
+    
     # Configurações do Windows Update
     # TODO opção: "Obter as atualizações mais recentes assim que elas estiverem disponíveis"
     function ConfigOpcoesAvancadasWU{
@@ -123,7 +121,7 @@ function ConfigSistema {
         powercfg /change monitor-timeout-ac 0
         powercfg /change monitor-timeout-dc 30
     }
-
+    
     # Configurações do explorador de arquivos
     # TODO opção: "Exibir ícone de arquivo nas miniaturas"
     function ConfigExplorer{
@@ -133,10 +131,11 @@ function ConfigSistema {
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name ShowEncryptCompressedColor -Value 1
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name UseCompactMode -Value 1
     }
-
+    
     # Deixa o sistema no modo escuro
     # TODO opção para modo claro
     function ConfigDarkMode {
+        $SO = (Get-CimInstance Win32_OperatingSystem).Caption
         if($SO -like "*Windows 11*"){
             Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name Wallpaper -Value 'C:\Windows\Web\Wallpaper\Windows\img19.jpg'
         }
@@ -167,6 +166,7 @@ function ConfigSistema {
             Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy' -Name 2048 -Value 1
             Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy' -Name 256 -Value 0
         }
+        $SO = (Get-CimInstance Win32_OperatingSystem).Caption
         if($SO -like "*Windows 10*"){
             Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy -Name 01 -Value 1
         }
@@ -176,7 +176,7 @@ function ConfigSistema {
     function ConfigMultitarefas {
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name MultiTaskingAltTabFilter -Value 3
     }
-
+    
     # Configura a memória virtual (Memória de Paginação)
     function ConfigMemoriaVirtual {
         $memoria = Get-CimInstance -ClassName Win32_PhysicalMemory
@@ -189,14 +189,14 @@ function ConfigSistema {
         $tammaxmb = ($memoriatotalmb*3)
         Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management' -Name 'PagingFiles' -Value "C:\pagefile.sys $taminimb $tammaxmb"
     }
-
+    
     # Configura o Menu Iniciar
     function ConfigMenuIniciar {
         if($SO -like "*Windows 11*"){
-        Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Start' -Name ShowRecentList -Value 0
+            Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Start' -Name ShowRecentList -Value 0
         }
     }
-
+    
     # Desabilita os serviços WSearch (Windows Search) e DusmSvc (Data Usage/Uso de Dados)
     function ConfigServicos {
         Stop-Service -name WSearch -force
@@ -211,9 +211,10 @@ function ConfigSistema {
         Start-Sleep -Seconds 5
         Restart-Computer
     }
-
+    
     # Função para rodar as configurações
     function Configs {
+        Write-Host "Configurando o sistema..." -ForegroundColor Green
         AlterarHostname
         OOShutup
         ConfigMouse
@@ -236,18 +237,3 @@ function ConfigSistema {
         ConfigServicos
         Reiniciar
     }
-
-    Configs
-    $DesinstalacaoAppsSN = Read-Host "Você deseja realizar a desinstalação de programas inicial? [S] [N]"
-    switch ($DesinstalacaoAppsSN) {
-        "S" {
-            DesinstalacaoApps
-        }
-        "N" {
-            Write-Host "Os programas não serão desinstalados." -ForegroundColor Blue
-        }
-        Default {
-            Write-Host "Opção inválida" -ForegroundColor Red
-        }
-    }
-}
