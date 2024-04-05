@@ -25,8 +25,18 @@ Import-Module -Name ps-menu -Force
 
 function Cabecalho($menu, $submenu) {
 	Clear-Host
-	Write-Host "=========-----========="
-	Write-Host "       PS-Script"
+	Write-Host "==========----------=========="
+	Write-Host ""
+	Write-Host "  ┏┓ ┏┓    ┏┓ ┏┓ ┳┓ ┳ ┏┓ ┏┳┓ "
+	Write-Host "  ┃┃ ┗┓ ━━ ┗┓ ┃  ┣┫ ┃ ┃┃  ┃  "
+	Write-Host "  ┣┛ ┗┛    ┗┛ ┗┛ ┛┗ ┻ ┣┛  ┻  "
+	Write-Host ""
+	Write-Host "==========----------=========="
+	Write-Host ""
+	Write-Host "↑ = Subir seleção"
+	Write-Host "↓ = Baixar seleção"
+	Write-Host "↵ = Selecionar"
+	Write-Host "← = Fechar script"
 	Write-Host ""
 	Write-Host -NoNewline $menu
 	Write-Host $submenu -ForegroundColor Blue
@@ -38,14 +48,13 @@ function OpcoesMenu([array]$opcoes) {
 	& ($opcoes | Where-Object {$_.o -eq $result}).a
 }
 
-
 function Menu1 {
 	Cabecalho -submenu "Menu"
 	$OpcoesMenu = @(
 		@{o = "Sistema" ; a = {MenuSistema}},
 		@{o = "Ativações" ; a = {MenuAtivacoes}},
 		@{o = "Customizações" ; a = {MenuCustomizacoes}}
-		@{o = "Sair" ; a = {Sair}}
+		# @{o = "Sair" ; a = {Sair}}
 	) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 	OpcoesMenu -opcoes $OpcoesArray
 }
@@ -102,15 +111,15 @@ function Menu1 {
 		OpcoesMenu -opcoes $OpcoesArray
 	}
 
-	function Sair {
-		Cabecalho -menu "Menu > " -submenu "Sair"
-		Write-Host "Tem certeza que deseja sair?" -ForegroundColor Yellow
-		$OpcoesMenu = @(
-			@{o = "Sim" ; a = {Clear-Host ; Exit-PSHostProcess}}
-			@{o = "Não" ; a = {Menu1}}
-		)  ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-		OpcoesMenu -opcoes $OpcoesArray
-	}
+	# function Sair {
+	# 	Cabecalho -menu "Menu > " -submenu "Sair"
+	# 	Write-Host "Tem certeza que deseja sair?" -ForegroundColor Yellow
+	# 	$OpcoesMenu = @(
+	# 		@{o = "Sim" ; a = {Clear-Host ; Exit-PSHostProcess}}
+	# 		@{o = "Não" ; a = {Menu1}}
+	# 	)  ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+	# 	OpcoesMenu -opcoes $OpcoesArray
+	# }
 
 
 Menu1
