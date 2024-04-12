@@ -14,8 +14,8 @@ function OpcoesMenu([array]$opcoes) {
             
         } else {
             if ($global:OpcoesSelecionadas[$result] -ne "1") {
-                & ($NomeVariavelAtual)
-                $NomeVariavelAtual = "aasdj"
+                [string]$AlteraVar = $(Get-Variable -Name $NomeVariavelAtual).Value
+                $a = $AlteraVar.ToCharArray() ; $a[1] = "x" ; & $(Get-Variable -Name $NomeVariavelAtual) = $a
                 Set-Variable -Name $NomeVariavelAtual -Value "[x] $result" -Scope Global
                 $global:OpcoesSelecionadas["$result"] = "1"
             } elseif ($global:OpcoesSelecionadas[$result] -eq "1") {
