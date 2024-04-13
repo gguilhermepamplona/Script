@@ -1,30 +1,41 @@
 Import-Module -Name ps-menu -Force
 
-$global:OpcoesSelecionadas = @{}
-
 function OpcoesMenu([array]$opcoes) {
+    Clear-Host
     [string]$result = Menu -menuItems ($opcoes.o)
     $VariavelAtual = $opcoes | Where-Object {$_.o -eq $result}
     $NomeVariavelAtual = (Get-Variable -Scope Global | Where-Object { $_.Value -eq "$result" -and $_.Value -isnot [bool]}).Name
+    function OpcoesSelecionadas($sel, $var, $var2) {
+        [string]$AlteraVar = $var.Value
+        $a = $AlteraVar.ToCharArray() ; $a[1] = "$sel" ; $a = -join $a ; Set-Variable -Name $var2 -Value $a -Scope Global
+    }
     if ($result -like "[x]*") {
         $result = $result.Replace("[x]", "[ ]")
     }
     if ($VariavelAtual.ms) {
-        if ($VariavelAtual.st){
-            
+        if ($VariavelAtual.sa){
+            if ($VariavelAtual.o.Substring(1,1) -eq " "){
+                $b = ($OpcoesMenu | Where-Object {$_.ms -eq $true}).o
+                foreach ($j in $b) {
+                    $k = (Get-Variable -Scope Global | Where-Object { $_.Value -eq "$j" -and $_.Value -isnot [bool]})
+                    OpcoesSelecionadas -sel "x" -var $k -var2 $k.Name
+                }
+            } else {
+                $b = ($OpcoesMenu | Where-Object {$_.ms -eq $true}).o
+                foreach ($j in $b) {
+                    $k = (Get-Variable -Scope Global | Where-Object { $_.Value -eq "$j" -and $_.Value -isnot [bool]})
+                    OpcoesSelecionadas -sel " " -var $k -var2 $k.Name
+                }
+            }
         } else {
-            if ($global:OpcoesSelecionadas[$result] -ne "1") {
-                [string]$AlteraVar = $(Get-Variable -Name $NomeVariavelAtual).Value
-                $a = $AlteraVar.ToCharArray() ; $a[1] = "x" ; & $(Get-Variable -Name $NomeVariavelAtual) = $a
-                Set-Variable -Name $NomeVariavelAtual -Value "[x] $result" -Scope Global
-                $global:OpcoesSelecionadas["$result"] = "1"
-            } elseif ($global:OpcoesSelecionadas[$result] -eq "1") {
-                # Set-Variable -Name $NomeVariavelAtual -Value "[ ] $result" -Scope Global
-                $global:OpcoesSelecionadas["$result"] = "0"
+            if ($result.Substring(1,1) -ne "x") {
+                OpcoesSelecionadas -sel "x" -var $(Get-Variable -Name $NomeVariavelAtual) -var2 $NomeVariavelAtual
+            } else {
+                OpcoesSelecionadas -sel " " -var $(Get-Variable -Name $NomeVariavelAtual) -var2 $NomeVariavelAtual
             }
         }
     }
-    & ($opcoes | Where-Object {$_.o -like $VariavelAtual.o}).a
+    & ($opcoes | Where-Object {$_.o -eq $result}).a
 }
 
 function Menu1 {
@@ -37,12 +48,12 @@ function Menu1 {
         $Menu1 = $True
     }
     $global:OpcoesMenu = @(
-        @{o = $global:Menu1TodasOpcoes ; a = {Clear-Host ; Menu1} ; ms = $true ; st = $true},
+        @{o = $global:Menu1TodasOpcoes ; a = {Clear-Host ; Menu1} ; ms = $true ; sa = $true},
         @{o = $global:Menu1Sistema ; a = {Clear-Host ; Menu1} ; ms = $true},
 		@{o = $global:Menu1Ativacoes ; a = {Clear-Host ; Menu1} ; ms = $true},
 		@{o = $global:Menu1Customizacoes ; a = {Clear-Host ; Menu1} ; ms = $true},
 		@{o = $global:Menu1Sair ; a = {Clear-Host ; Menu1}}
-        ) ; $OpcoesArray = $OpcoesMenu | ForEach-Object {@{o = $_.o ; a = $_.a ; ms = $_.ms ; st = $_.st}}
+        ) ; $OpcoesArray = $OpcoesMenu | ForEach-Object {@{o = $_.o ; a = $_.a ; ms = $_.ms ; sa = $_.sa}}
         OpcoesMenu -opcoes $OpcoesArray
 }
 
