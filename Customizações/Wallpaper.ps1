@@ -1,6 +1,7 @@
 function Wallpaper {
-$LinkWallpaper = "https://drive.google.com/uc?export=download&id=1rqt07IDCJeU6jjuv2tE5lHvQlwL3wEkC"
+# $LinkWallpaper = "https://drive.google.com/uc?export=download&id=1rqt07IDCJeU6jjuv2tE5lHvQlwL3wEkC"
 # $NomeArquivo = [System.IO.Path]::GetFileName((New-Object System.Uri($LinkWallpaper)).LocalPath)
+$LinkWallpaper = "https://drive.google.com/uc?export=download&id=1HOvbe6BCRhR4bA83otWIse8HAZjqY3ov"
 
 if(-not(Test-Path -Path "C:\Windows\Web\Wallpaper\Script")){
     New-Item "C:\Windows\Web\Wallpaper\Script" -ItemType Directory
