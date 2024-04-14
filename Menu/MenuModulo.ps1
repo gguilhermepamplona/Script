@@ -148,7 +148,7 @@ function Menu1 {
 			}
 			function DesfragmentacaoOtimizacao {
 				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Desfragmentação / Otimização"
-				Write-Host "Sera realizada desfragmentacao em HDs e otimizacao em SSDs." -ForegroundColor Yellow
+				Write-Host "Será realizada desfragmentacao em HDs e otimizacao em SSDs." -ForegroundColor Yellow
 				Write-Host ""
 				$global:DesfragmentacaoOtimizacaoIniciar = "Iniciar"
 				$global:DesfragmentacaoOtimizacaoVoltar = "Voltar"
