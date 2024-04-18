@@ -113,7 +113,6 @@ function AlterarHostname{
 
     # Configurações de energia
     function ConfigEnergia{
-        Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power' -Name HiberbootEnabled -Value 0
         powercfg /change disk-timeout-ac 0
         powercfg /change disk-timeout-dc 0
         powercfg /change standby-timeout-ac 0

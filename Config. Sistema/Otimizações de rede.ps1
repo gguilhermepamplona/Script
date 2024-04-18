@@ -1,8 +1,27 @@
+# Desativa Teredo
+netsh interface teredo set state disabled > Out-Null
+
+# ---------------------------------------- TCPOPTIMIZER ----------------------------------------
+# Auto TuningLevelLocal | Padrão: 
+Set-NetTCPSetting -Setting Name internet -Auto TuningLevelLocal nomal
+
 # ScalingHeuristics | Padrão: default
 Set-NetTCPSetting -SettingName internet -ScalingHeuristics disabled
 
+# CongestionProvider
+netsh int tcp set supplemental internet congestionprovider=CUBIC
+
 # ReceiveSegmentCoalescing | Padrão: enabled
 Set-NetOffloadGlobalSetting -ReceiveSegmentCoalescing disabled
+
+# ReceiveSideScaling | Padrão: 
+Set-NetOffloadGlobalSetting -ReceiveSideScaling Enabled
+
+# Large Send Offload | Padrão: 
+Disable-NetAdapterLso -Name *
+
+# Checksum Offload | Padrão: 
+Enable-NetAdapterChecksumOffload -Name *
 
 # MaxConnectionsPer1_0Server | Padrão: 
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MAXCONNECTIONSPER1_0SERVER" -Name "explorer.exe" -Value 10 -Type DWord
@@ -57,9 +76,37 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
 # DefaultTTL | Padrão: 
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "DefaultTTL" -Value 64 -Type DWord
 
+# ECNCapability | Padrão: 
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "EcnCapability" -Value 0 -Type DWord
+
+# Chimney | Padrão: 
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "EnableTCPChimney" -Value 0 -Type DWord
+
+# Timestamps | Padrão: 
+Set-NetTCPSetting -SettingName internet -Timestamps disabled
+
+# MaxSynRetransmissions | Padrão: 
+Set-NetTCPSetting -SettingName internet -MaxSynRetransmissions 2
+
+# NonSackRTTResiliency | Padrão: 
+Set-NetTCPSetting -SettingName internet -NonSackRttResiliency disabled
+
+# InitialRto
+Set-NetTCPSetting -SettingName internet -InitialRto 2000
+
+# MinRto
+Set-NetTCPSetting -SettingName internet -MinRto 300
+
+# MTU
+netsh interface ipv4 set subinterface "Wifi" mtu=1500 store=persistent
+netsh interface ipv6 set subinterface "Wifi" mtu=1500 store=persistent
+netsh interface ipv4 set subinterface "Ethernet" mtu=1500 store=persistent
+netsh interface ipv6 set subinterface "Ethernet" mtu=1500 store=persistent
+
+# TcpAckFrequency
+# TcpDelAck Ticks
 # TCPNoDelay | Padrão: 
 if (-not (Test-Path -path "HKLM:\SOFTWARE\Microsoft\MSMQ\Parameters")){
     New-Item -Path "HKLM:\SOFTWARE\Microsoft\MSMQ\Parameters" -Force
 }
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\MSMQ\Parameters" -Name "TCPNoDelay" -Value 1 -Type DWord
-
