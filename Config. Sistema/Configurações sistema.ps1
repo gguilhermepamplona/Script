@@ -20,6 +20,7 @@ function AlterarHostname{
         Start-BitsTransfer -Source "https://alexandreacosta.com.br/ProgramasPowerShell/OOSU.cfg" -Destination OOSU.cfg
         Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
         ./OOSU10.exe OOSU.cfg /quiet
+        Remove-Item "C:\OOSU.cfg" > Out-Null ; Remove-Item "C:\OOSU10.exe" > Out-Null
     }
     
     # Desativa aceleração do mouse
@@ -216,7 +217,6 @@ function AlterarHostname{
         OOShutup
         ConfigMouse
         ConfigTouchpad
-        ConfigControleContaUsuario
         ConfigLimiteCaracteres
         ConfigPrintScreen
         ConfigTeclado
