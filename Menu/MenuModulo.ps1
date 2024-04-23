@@ -104,14 +104,14 @@ function Menu1 {
 		Cabecalho -menu "Menu > " -submenu "Sistema"
 			$global:MenuSistemaConfigSistema = "Configurações do sistema"
 			$global:MenuSistemaDesinProg = "Desinstalação de Programas"
-			$global:MenuSistemaInstProg = "Instalação de Programas"
+			$global:MenuSistemaInstProg = "Configuracoes (temporario)"
 			$global:MenuSistemaDefrag = "Desfragmentação / Otimização"
 			$global:MenuSistemaCTT = "CTT"
 			$global:MenuSistemaVoltar = "Voltar"
 		$OpcoesMenu = @(
 			@{o = $global:MenuSistemaConfigSistema ; a = {MenuConfigSistema}},
 			@{o = $global:MenuSistemaDesinProg ; a = {DesinstalacaoApps ; MenuSistema}}
-			@{o = $global:MenuSistemaInstProg ; a = {configuracoes}},
+			@{o = $global:MenuSistemaInstProg ; a = {configuracoes ; MenuSistema}},
 			@{o = $global:MenuSistemaDefrag ; a = {DesfragmentacaoOtimizacao}},
 			@{o = $global:MenuSistemaCTT ; a = {CTT}},
 			@{o = $global:MenuSistemaVoltar ; a = {Menu1}}
