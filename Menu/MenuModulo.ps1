@@ -17,6 +17,7 @@ Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/m
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Configura%C3%A7%C3%B5es%20sistema.ps1" | Invoke-Expression
 # Desinstalação de Apps
 Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Desinstala%C3%A7%C3%A3o%20apps.ps1" | Invoke-Expression
+Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Menu/configuracoes.ps1" | Invoke-Expression
 
 if (-not (Get-Module -Name ps-menu -ListAvailable)) {
     Install-Module -Name ps-menu -Scope CurrentUser -Force
@@ -110,7 +111,7 @@ function Menu1 {
 		$OpcoesMenu = @(
 			@{o = $global:MenuSistemaConfigSistema ; a = {MenuConfigSistema}},
 			@{o = $global:MenuSistemaDesinProg ; a = {DesinstalacaoApps ; MenuSistema}}
-			@{o = $global:MenuSistemaInstProg ; a = {MenuSistema}},
+			@{o = $global:MenuSistemaInstProg ; a = {configuracoes}},
 			@{o = $global:MenuSistemaDefrag ; a = {DesfragmentacaoOtimizacao}},
 			@{o = $global:MenuSistemaCTT ; a = {CTT}},
 			@{o = $global:MenuSistemaVoltar ; a = {Menu1}}
