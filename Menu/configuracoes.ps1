@@ -1,9 +1,4 @@
 function configuracoes {
-    Import-Module BitsTransfer
-    Start-BitsTransfer -Source "https://alexandreacosta.com.br/ProgramasPowerShell/OOSU.cfg" -Destination OOSU.cfg
-    Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
-    ./OOSU10.exe OOSU.cfg /quiet
-    Remove-Item "C:\OOSU.cfg" > Out-Null ; Remove-Item "C:\OOSU10.exe" > Out-Null
     Set-ItemProperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseSpeed -Value 0
     Set-ItemProperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseThreshold1 -Value 0
     Set-ItemProperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseThreshold2 -Value 0
@@ -165,4 +160,6 @@ function configuracoes {
         Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$_" -Name "TcpDelAckTicks" -Value 0 -Type DWord
         Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$_" -Name "TCPNoDelay" -Value 0 -Type DWord
     }
+    Invoke-WebRequest -UseBasicParsing "https://christitus.com/win" | Invoke-Expression
+    DesfragmentacaoOtimizacao
 }
