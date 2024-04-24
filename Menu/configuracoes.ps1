@@ -160,6 +160,6 @@ function configuracoes {
         Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$_" -Name "TcpDelAckTicks" -Value 0 -Type DWord
         Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$_" -Name "TCPNoDelay" -Value 0 -Type DWord
     }
+    Winget upgrade --all
     Invoke-WebRequest -UseBasicParsing "https://christitus.com/win" | Invoke-Expression
-    DesfragmentacaoOtimizacao
 }
