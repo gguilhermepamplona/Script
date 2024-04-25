@@ -10,6 +10,7 @@ function configuracoes {
     Remove-ItemProperty -Path 'HKCU:\Keyboard Layout\Preload' -Name 2 -ErrorAction Ignore
     Set-ItemProperty -Path 'HKCU:\Control Panel\Accessibility\StickyKeys' -Name Flags -Value 26 -ErrorAction Ignore
     Set-ItemProperty -Path 'HKCU:\Control Panel\Accessibility\Keyboard Response' -Name Flags -Value 26 -ErrorAction Ignore
+    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" -Name "DisableAutoplay" -Value 1 -PropertyType DWORD -Force
     $SO = (Get-CimInstance Win32_OperatingSystem).Caption
     if ($SO -like "*Windows 10*"){
         If (!(Test-Path 'HKCU:\Software\Microsoft\input\Settings')) {
