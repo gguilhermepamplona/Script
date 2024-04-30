@@ -35,6 +35,11 @@ function AlterarHostname{
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad' -Name AAPThreshold -Value 0
     }
     
+    # Desativa a Reprodução Automática
+    function ConfigAutoPlay {
+    New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" -Name "DisableAutoplay" -Value 1 -PropertyType DWORD -Force
+    }
+
     # Desativa o UAC. 0 = Desativado e 1 = Ativado
     function ConfigControleContaUsuario {
         Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name EnableLUA -Value 0
