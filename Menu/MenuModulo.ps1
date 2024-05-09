@@ -6,18 +6,20 @@ if(-not(Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)){
 $host.UI.RawUI.WindowTitle = "PS-Script"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 # Ativação do Windows
-Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Ativa%C3%A7%C3%A3o%20Windows.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Ativa%C3%A7%C3%A3o%20Windows.ps1" | Invoke-Expression
 # Cursor
-Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Cursor.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Cursor.ps1" | Invoke-Expression
 # Wallpaper
-Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Wallpaper.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Wallpaper.ps1" | Invoke-Expression
 # Terminal
-Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Terminal.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Customiza%C3%A7%C3%B5es/Terminal.ps1" | Invoke-Expression
 # Configurações do Sistema
-Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Configura%C3%A7%C3%B5es%20sistema.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Configura%C3%A7%C3%B5es%20sistema.ps1" | Invoke-Expression
 # Desinstalação de Apps
-Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Desinstala%C3%A7%C3%A3o%20apps.ps1" | Invoke-Expression
-Invoke-WebRequest "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Menu/configuracoes.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Desinstala%C3%A7%C3%A3o%20apps.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Menu/configuracoes.ps1" | Invoke-Expression
+# Windows Update
+Invoke-WebRequest -UseBasicParsing"https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/WindowsUpdate.ps1" | Invoke-Expression
 
 if (-not (Get-Module -Name ps-menu -ListAvailable)) {
     Install-Module -Name ps-menu -Scope CurrentUser -Force
@@ -40,7 +42,7 @@ function Cabecalho($menu, $submenu) {
 	Write-Host "← = Fechar script"
 	Write-Host ""
 	Write-Host -NoNewline $menu
-	Write-Host $submenu -ForegroundColor Blue
+	Write-Host $submenu -ForegroundColor Red
 	Write-Host ""
 }
 
@@ -103,6 +105,7 @@ function Menu1 {
 	function MenuSistema {
 		Cabecalho -menu "Menu > " -submenu "Sistema"
 			$global:MenuSistemaConfigSistema = "Configurações do sistema"
+			$global:MenuSistemaWindowsUpdate = "Windows Update"
 			$global:MenuSistemaDesinProg = "Desinstalação de Programas"
 			$global:MenuSistemaInstProg = "Configuracoes (temporario)"
 			$global:MenuSistemaDefrag = "Desfragmentação / Otimização"
@@ -110,10 +113,11 @@ function Menu1 {
 			$global:MenuSistemaVoltar = "Voltar"
 		$OpcoesMenu = @(
 			@{o = $global:MenuSistemaConfigSistema ; a = {MenuConfigSistema}},
+			@{o = $global:MenuSistemaWindowsUpdate ; a = {WindowsUpdate}},
 			@{o = $global:MenuSistemaDesinProg ; a = {DesinstalacaoApps ; MenuSistema}}
 			@{o = $global:MenuSistemaInstProg ; a = {configuracoes ; MenuSistema}},
 			@{o = $global:MenuSistemaDefrag ; a = {DesfragmentacaoOtimizacao}},
-			@{o = $global:MenuSistemaCTT ; a = {CTT}},
+			@{o = $global:MenuSistemaCTT ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
 			@{o = $global:MenuSistemaVoltar ; a = {Menu1}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
@@ -148,7 +152,7 @@ function Menu1 {
 			OpcoesMenu -opcoes $OpcoesArray
 			}
 			function DesfragmentacaoOtimizacao {
-				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Desfragmentação / Otimização"
+				Cabecalho -menu "Menu > Sistema > " -submenu "Desfragmentação / Otimização"
 				Write-Host "Será realizada desfragmentacao em HDs e otimizacao em SSDs." -ForegroundColor Yellow
 				Write-Host ""
 				$global:DesfragmentacaoOtimizacaoIniciar = "Iniciar"
@@ -160,7 +164,7 @@ function Menu1 {
 			OpcoesMenu -opcoes $OpcoesArray
 			}
 			function CTT {
-				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "CTT"
+				Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
 				$global:CTTIniciar = "Iniciar"
 				$global:CTTVoltar = "Voltar"
 				$OpcoesMenu = @(
