@@ -19,7 +19,7 @@ Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilherme
 Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Desinstala%C3%A7%C3%A3o%20apps.ps1" | Invoke-Expression
 Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Menu/configuracoes.ps1" | Invoke-Expression
 # Windows Update
-Invoke-WebRequest -UseBasicParsing"https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/WindowsUpdate.ps1" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/WindowsUpdate.ps1" | Invoke-Expression
 
 if (-not (Get-Module -Name ps-menu -ListAvailable)) {
     Install-Module -Name ps-menu -Scope CurrentUser -Force
@@ -28,13 +28,13 @@ Import-Module -Name ps-menu -Force
 
 function Cabecalho($menu, $submenu) {
 	Clear-Host
-	Write-Host "==========----------=========="
+	Write-Host "==========----------==========" 
 	Write-Host ""
-	Write-Host "  ┏┓ ┏┓    ┏┓ ┏┓ ┳┓ ┳ ┏┓ ┏┳┓ "
-	Write-Host "  ┃┃ ┗┓ ━━ ┗┓ ┃  ┣┫ ┃ ┃┃  ┃  "
-	Write-Host "  ┣┛ ┗┛    ┗┛ ┗┛ ┛┗ ┻ ┣┛  ┻  "
+	Write-Host "  ┏┓ ┏┓    ┏┓ ┏┓ ┳┓ ┳ ┏┓ ┏┳┓ " -ForegroundColor DarkMagenta
+	Write-Host "  ┃┃ ┗┓ ━━ ┗┓ ┃  ┣┫ ┃ ┃┃  ┃  " -ForegroundColor DarkMagenta
+	Write-Host "  ┣┛ ┗┛    ┗┛ ┗┛ ┛┗ ┻ ┣┛  ┻  " -ForegroundColor DarkMagenta
 	Write-Host ""
-	Write-Host "==========----------=========="
+	Write-Host "==========----------==========" 
 	Write-Host ""
 	Write-Host "↑ = Subir seleção"
 	Write-Host "↓ = Baixar seleção"
@@ -50,7 +50,6 @@ function Cabecalho($menu, $submenu) {
 # 	$result = Menu -menuItems ($opcoes.o)
 # 	& ($opcoes | Where-Object {$_.o -eq $result}).a
 # }
-
 
 function OpcoesMenu([array]$opcoes) {
     [string]$result = Menu -menuItems ($opcoes.o)
@@ -105,18 +104,18 @@ function Menu1 {
 	function MenuSistema {
 		Cabecalho -menu "Menu > " -submenu "Sistema"
 			$global:MenuSistemaConfigSistema = "Configurações do sistema"
+			$global:MenuSistemaCorrecoes = "Verificações e correções"
 			$global:MenuSistemaWindowsUpdate = "Windows Update"
 			$global:MenuSistemaDesinProg = "Desinstalação de Programas"
 			$global:MenuSistemaInstProg = "Configuracoes (temporario)"
-			$global:MenuSistemaDefrag = "Desfragmentação / Otimização"
 			$global:MenuSistemaCTT = "CTT"
 			$global:MenuSistemaVoltar = "Voltar"
 		$OpcoesMenu = @(
 			@{o = $global:MenuSistemaConfigSistema ; a = {MenuConfigSistema}},
-			@{o = $global:MenuSistemaWindowsUpdate ; a = {WindowsUpdate}},
+			@{o = $global:MenuSistemaCorrecoes ; a = {MenuCorrec ; MenuSistema}},
+			@{o = $global:MenuSistemaWindowsUpdate ; a = {WindowsUpdate ; MenuSistema}},
 			@{o = $global:MenuSistemaDesinProg ; a = {DesinstalacaoApps ; MenuSistema}}
 			@{o = $global:MenuSistemaInstProg ; a = {configuracoes ; MenuSistema}},
-			@{o = $global:MenuSistemaDefrag ; a = {DesfragmentacaoOtimizacao}},
 			@{o = $global:MenuSistemaCTT ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
 			@{o = $global:MenuSistemaVoltar ; a = {Menu1}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
@@ -133,9 +132,9 @@ function Menu1 {
 				@{o = $global:MenuConfigSistemaAlterHost ; a = {AlterarHostname ; MenuConfigSistema}},
 				@{o = $global:MenuConfigSistemaSelecOpcoes ; a = {MenuSelecConfigSistema}},
 				@{o = $global:MenuConfigSistemaVoltar ; a = {MenuSistema}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-		}
+				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+				OpcoesMenu -opcoes $OpcoesArray
+			}
 			function MenuSelecConfigSistema {
 				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Selecionar"
 				if (-not $MenuSelecConfigSistema){
@@ -145,34 +144,51 @@ function Menu1 {
 					$MenuSelecConfigSistema = $true
 				}
 				$OpcoesMenu = @(
-				@{o = $global:MenuSelecConfigSistemaIniciar ; a = {Configs ; MenuConfigSistema}},
-				@{o = $global:MenuSelecConfigSistemaSelecOpcoes ; a = {MenuSelecConfigSistema}},
-				@{o = $global:MenuSelecConfigSistemaVoltar ; a = {MenuSistema}}
+					@{o = $global:MenuSelecConfigSistemaIniciar ; a = {Configs ; MenuConfigSistema}},
+					@{o = $global:MenuSelecConfigSistemaSelecOpcoes ; a = {MenuSelecConfigSistema}},
+					@{o = $global:MenuSelecConfigSistemaVoltar ; a = {MenuSistema}}
 			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a ; ms = $_.ms ; sa = $_.sa}}
 			OpcoesMenu -opcoes $OpcoesArray
 			}
-			function DesfragmentacaoOtimizacao {
-				Cabecalho -menu "Menu > Sistema > " -submenu "Desfragmentação / Otimização"
-				Write-Host "Será realizada desfragmentacao em HDs e otimizacao em SSDs." -ForegroundColor Yellow
-				Write-Host ""
-				$global:DesfragmentacaoOtimizacaoIniciar = "Iniciar"
-				$global:DesfragmentacaoOtimizacaoVoltar = "Voltar"
-				$OpcoesMenu = @(
-				@{o = $global:DesfragmentacaoOtimizacaoIniciar ; a = {Get-Volume | Where-Object DriveLetter | Where-Object DriveType -eq Fixed | Optimize-Volume ; Start-Sleep -Seconds 2 ; MenuSistema}},
-				@{o = $global:DesfragmentacaoOtimizacaoVoltar ; a = {MenuSistema}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-			}
-			function CTT {
-				Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
-				$global:CTTIniciar = "Iniciar"
-				$global:CTTVoltar = "Voltar"
-				$OpcoesMenu = @(
-				@{o = $global:CTTIniciar ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
-				@{o = $global:CTTVoltar ; a = {MenuSistema}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-			}
+			function MenuCorrec {
+			Cabecalho -menu "Menu > Sistema > " -submenu "Verificações e Correções"
+			$global:MenuCorrecSFCDISM = "[sfc e dism] Verif. e Repar. do sistema de arquivos do Windows"
+			$global:MenuCorrecCHKDSKOn = "[chkdsk online] Verif. e Repar. do disco"
+			$global:MenuCorrecCHKDSKOff = "[chkdsk offline] Verif. e Repar. do disco"
+			$global:MenuCorrecDefrag = "Desfragmentação / Otimização"
+			$global:MenuCorrecVoltar = "Voltar"
+			$OpcoesMenu = @(
+				@{o = $global:MenuCorrecSFCDISM ; a = {SFCDISM ; MenuCorrec}},
+				@{o = $global:MenuCorrecCHKDSKOn ; a = {CHKDSKOnline ; MenuCorrec}},
+				@{o = $global:MenuCorrecCHKDSKOff ; a = {CHKDSKOffline ; MenuCorrec}},
+				@{o = $global:MenuCorrecDefrag ; a = {MenuDesfragmentacaoOtimizacao ; MenuCorrec}},
+				@{o = $global:MenuCorrecVoltar ; a = {MenuSistema}}
+				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+				OpcoesMenu -opcoes $OpcoesArray
+		}
+		
+				function MenuDesfragmentacaoOtimizacao {
+					Cabecalho -menu "Menu > Sistema > " -submenu "Desfragmentação / Otimização"
+					Write-Host "Será realizada desfragmentacao em HDs e otimização em SSDs." -ForegroundColor Yellow
+					Write-Host ""
+					$global:MenuDesfragmentacaoOtimizacaoIniciar = "Iniciar"
+					$global:MenuDesfragmentacaoOtimizacaoVoltar = "Voltar"
+					$OpcoesMenu = @(
+					@{o = $global:MenuDesfragmentacaoOtimizacaoIniciar ; a = {DesfragmentacaoOtimizacao ; MenuSistema}},
+					@{o = $global:MenuDesfragmentacaoOtimizacaoVoltar ; a = {MenuSistema}}
+				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+				OpcoesMenu -opcoes $OpcoesArray
+				}
+		function CTT {
+			Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
+			$global:CTTIniciar = "Iniciar"
+			$global:CTTVoltar = "Voltar"
+			$OpcoesMenu = @(
+			@{o = $global:CTTIniciar ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
+			@{o = $global:CTTVoltar ; a = {MenuSistema}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+		}
 	function MenuAtivacoes {
 		Cabecalho -menu "Menu > " -submenu "Ativações"
 		$global:MenuAtivacoesWindows = "Windows"
