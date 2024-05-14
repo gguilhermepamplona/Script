@@ -150,35 +150,71 @@ function Menu1 {
 			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a ; ms = $_.ms ; sa = $_.sa}}
 			OpcoesMenu -opcoes $OpcoesArray
 			}
-			function MenuCorrec {
-			Cabecalho -menu "Menu > Sistema > " -submenu "Verificações e Correções"
-			$global:MenuCorrecSFCDISM = "[sfc e dism] Verif. e Repar. do sistema de arquivos do Windows"
-			$global:MenuCorrecCHKDSKOn = "[chkdsk online] Verif. e Repar. do disco"
-			$global:MenuCorrecCHKDSKOff = "[chkdsk offline] Verif. e Repar. do disco"
-			$global:MenuCorrecDefrag = "Desfragmentação / Otimização"
-			$global:MenuCorrecVoltar = "Voltar"
-			$OpcoesMenu = @(
-				@{o = $global:MenuCorrecSFCDISM ; a = {SFCDISM ; MenuCorrec}},
-				@{o = $global:MenuCorrecCHKDSKOn ; a = {CHKDSKOnline ; MenuCorrec}},
-				@{o = $global:MenuCorrecCHKDSKOff ; a = {CHKDSKOffline ; MenuCorrec}},
-				@{o = $global:MenuCorrecDefrag ; a = {MenuDesfragmentacaoOtimizacao ; MenuCorrec}},
-				@{o = $global:MenuCorrecVoltar ; a = {MenuSistema}}
-				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-				OpcoesMenu -opcoes $OpcoesArray
+		function MenuCorrec {
+		Cabecalho -menu "Menu > Sistema > " -submenu "Verificações e Correções"
+		$global:MenuCorrecSFCDISM = "[sfc e dism] Verif. e Repar. do sistema de arquivos do Windows"
+		$global:MenuCorrecCHKDSKOn = "[chkdsk online] Verif. e Repar. do disco"
+		$global:MenuCorrecCHKDSKOff = "[chkdsk offline] Verif. e Repar. do disco"
+		$global:MenuCorrecDefrag = "Desfragmentação / Otimização"
+		$global:MenuCorrecVoltar = "Voltar"
+		$OpcoesMenu = @(
+			@{o = $global:MenuCorrecSFCDISM ; a = {MenuSFCDISM}},
+			@{o = $global:MenuCorrecCHKDSKOn ; a = {MenuCHKDSKOnline}},
+			@{o = $global:MenuCorrecCHKDSKOff ; a = {MenuCHKDSKOffline}},
+			@{o = $global:MenuCorrecDefrag ; a = {MenuDesfragmentacaoOtimizacao}},
+			@{o = $global:MenuCorrecVoltar ; a = {MenuSistema}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
 		}
-		
-				function MenuDesfragmentacaoOtimizacao {
-					Cabecalho -menu "Menu > Sistema > " -submenu "Desfragmentação / Otimização"
-					Write-Host "Será realizada desfragmentacao em HDs e otimização em SSDs." -ForegroundColor Yellow
-					Write-Host ""
-					$global:MenuDesfragmentacaoOtimizacaoIniciar = "Iniciar"
-					$global:MenuDesfragmentacaoOtimizacaoVoltar = "Voltar"
-					$OpcoesMenu = @(
-					@{o = $global:MenuDesfragmentacaoOtimizacaoIniciar ; a = {DesfragmentacaoOtimizacao ; MenuSistema}},
-					@{o = $global:MenuDesfragmentacaoOtimizacaoVoltar ; a = {MenuSistema}}
-				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-				OpcoesMenu -opcoes $OpcoesArray
-				}
+			function MenuSFCDISM {
+				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do sistema de arquivos do Windows"
+				Write-Host "Será executado ""Repair-WindowsImage"", no qual é equivalente ao sfc e dism." -ForegroundColor Yellow
+				Write-Host ""
+				$global:MenuSFCDISMIniciar = "Iniciar"
+				$global:MenuSFCDISMVoltar = "Voltar"
+				$OpcoesMenu = @(
+				@{o = $global:MenuSFCDISMIniciar ; a = {SFCDISM ; MenuSFCDISM}},
+				@{o = $global:MenuSFCDISMVoltar ; a = {MenuCorrec}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+			}
+			function MenuCHKDSKOnline {
+				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do disco online"
+				Write-Host "Será executado ""Repair-Volume"" online (dentro do sistema), no qual é equivalente ao chkdsk." -ForegroundColor Yellow
+				Write-Host ""
+				$global:MenuCHKDSKIniciar = "Iniciar"
+				$global:MenuCHKDSKVoltar = "Voltar"
+				$OpcoesMenu = @(
+				@{o = $global:MenuCHKDSKIniciar ; a = {CHKDSKOnline ; MenuCHKDSKOnline}},
+				@{o = $global:MenuCHKDSKVoltar ; a = {MenuCorrec}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+			}
+			function MenuCHKDSKOffline {
+				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do disco offline"
+				Write-Host "Será executado ""Repair-Volume"" offline (fora do sistema), no qual é equivalente ao chkdsk." -ForegroundColor Yellow
+				Write-Host "OBS: será agendado um chkdsk antes da inicialização do sistema para a próxima reinicialização." -ForegroundColor Yellow
+				Write-Host ""
+				$global:MenuCHKDSKIniciar = "Iniciar"
+				$global:MenuCHKDSKVoltar = "Voltar"
+				$OpcoesMenu = @(
+				@{o = $global:MenuCHKDSKIniciar ; a = {CHKDSKOffline ; MenuCHKDSKOffline}},
+				@{o = $global:MenuCHKDSKVoltar ; a = {MenuCorrec}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+			}
+			function MenuDesfragmentacaoOtimizacao {
+				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Desfragmentação / Otimização"
+				Write-Host "Será realizada desfragmentacao em HDs e otimização em SSDs." -ForegroundColor Yellow
+				Write-Host ""
+				$global:MenuDesfragmentacaoOtimizacaoIniciar = "Iniciar"
+				$global:MenuDesfragmentacaoOtimizacaoVoltar = "Voltar"
+				$OpcoesMenu = @(
+				@{o = $global:MenuDesfragmentacaoOtimizacaoIniciar ; a = {DesfragmentacaoOtimizacao ; MenuCorrec}},
+				@{o = $global:MenuDesfragmentacaoOtimizacaoVoltar ; a = {MenuCorrec}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+			}
 		function CTT {
 			Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
 			$global:CTTIniciar = "Iniciar"
