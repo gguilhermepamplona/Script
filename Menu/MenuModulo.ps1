@@ -1,8 +1,8 @@
 # https://abre.ai/psscr
-if(-not(Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)){
-	Write-Host "Instalando NuGet..."
-	Install-PackageProvider -Name NuGet -Force
-}
+# if(-not(Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)){
+# 	Write-Host "Instalando NuGet..."
+# 	Install-PackageProvider -Name NuGet -Force
+# }
 $host.UI.RawUI.WindowTitle = "PS-Script"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 # Ativação do Windows
@@ -22,11 +22,14 @@ Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilherme
 Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/WindowsUpdate.ps1" | Invoke-Expression
 # Correções
 Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Corre%C3%A7%C3%A3o.ps1" | Invoke-Expression
+# ps-menu
+Invoke-WebRequest -UseBasicParsing "" | Invoke-Expression
 
-if (-not (Get-Module -Name ps-menu -ListAvailable)) {
-    Install-Module -Name ps-menu -Scope CurrentUser -Force
-}
-Import-Module -Name ps-menu -Force
+
+# if (-not (Get-Module -Name ps-menu -ListAvailable)) {
+#     Install-Module -Name ps-menu -Scope CurrentUser -Force
+# }
+# Import-Module -Name ps-menu -Force
 
 function Cabecalho($menu, $submenu) {
 	Clear-Host
@@ -134,8 +137,8 @@ function Menu1 {
 				@{o = $global:MenuConfigSistemaAlterHost ; a = {AlterarHostname ; MenuConfigSistema}},
 				@{o = $global:MenuConfigSistemaSelecOpcoes ; a = {MenuSelecConfigSistema}},
 				@{o = $global:MenuConfigSistemaVoltar ; a = {MenuSistema}}
-				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-				OpcoesMenu -opcoes $OpcoesArray
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
 			}
 			function MenuSelecConfigSistema {
 				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Selecionar"
@@ -149,25 +152,43 @@ function Menu1 {
 					@{o = $global:MenuSelecConfigSistemaIniciar ; a = {Configs ; MenuConfigSistema}},
 					@{o = $global:MenuSelecConfigSistemaSelecOpcoes ; a = {MenuSelecConfigSistema}},
 					@{o = $global:MenuSelecConfigSistemaVoltar ; a = {MenuSistema}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a ; ms = $_.ms ; sa = $_.sa}}
-			OpcoesMenu -opcoes $OpcoesArray
+				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a ; ms = $_.ms ; sa = $_.sa}}
+				OpcoesMenu -opcoes $OpcoesArray
 			}
 		function MenuCorrec {
 		Cabecalho -menu "Menu > Sistema > " -submenu "Verificações e Correções"
+		$global:MenuCorrecDefrag = "Desfragmentação / Otimização"
 		$global:MenuCorrecSFCDISM = "[sfc e dism] Verif. e Repar. do sistema de arquivos do Windows"
 		$global:MenuCorrecCHKDSKOn = "[chkdsk online] Verif. e Repar. do disco"
 		$global:MenuCorrecCHKDSKOff = "[chkdsk offline] Verif. e Repar. do disco"
-		$global:MenuCorrecDefrag = "Desfragmentação / Otimização"
+		$global:MenuCorrecRestauracaoStore = "Restauração da Microsoft Store"
+		$global:MenuCorrecIDERAIDparaAHCI = "IDE/RAID para AHCI"
+		$global:MenuCorrecMBRparaGPT = "MBR para GPT"
 		$global:MenuCorrecVoltar = "Voltar"
 		$OpcoesMenu = @(
+			@{o = $global:MenuCorrecDefrag ; a = {MenuDesfragmentacaoOtimizacao}},
 			@{o = $global:MenuCorrecSFCDISM ; a = {MenuSFCDISM}},
 			@{o = $global:MenuCorrecCHKDSKOn ; a = {MenuCHKDSKOnline}},
 			@{o = $global:MenuCorrecCHKDSKOff ; a = {MenuCHKDSKOffline}},
-			@{o = $global:MenuCorrecDefrag ; a = {MenuDesfragmentacaoOtimizacao}},
+			@{o = $global:MenuCorrecRestauracaoStore ; a = {MenuRestauracaoStore}},
+			@{o = $global:MenuCorrecIDERAIDparaAHCI ; a = {MenuIDERAIDparaAHCI}},
+			@{o = $global:MenuCorrecMBRparaGPT ; a = {MenuMBRparaGPT}},
 			@{o = $global:MenuCorrecVoltar ; a = {MenuSistema}}
 			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
+		OpcoesMenu -opcoes $OpcoesArray
 		}
+			function MenuDesfragmentacaoOtimizacao {
+				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Desfragmentação / Otimização"
+				Write-Host "Será realizada desfragmentacao em HDs e otimização em SSDs." -ForegroundColor Yellow
+				Write-Host ""
+				$global:MenuDesfragmentacaoOtimizacaoIniciar = "Iniciar"
+				$global:MenuDesfragmentacaoOtimizacaoVoltar = "Voltar"
+				$OpcoesMenu = @(
+				@{o = $global:MenuDesfragmentacaoOtimizacaoIniciar ; a = {DesfragmentacaoOtimizacao ; MenuCorrec}},
+				@{o = $global:MenuDesfragmentacaoOtimizacaoVoltar ; a = {MenuCorrec}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+			}
 			function MenuSFCDISM {
 				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do sistema de arquivos do Windows"
 				Write-Host "Será executado ""Repair-WindowsImage"", no qual é equivalente ao sfc e dism." -ForegroundColor Yellow
@@ -200,33 +221,72 @@ function Menu1 {
 				$global:MenuCHKDSKIniciar = "Iniciar"
 				$global:MenuCHKDSKVoltar = "Voltar"
 				$OpcoesMenu = @(
-				@{o = $global:MenuCHKDSKIniciar ; a = {CHKDSKOffline ; MenuCHKDSKOffline}},
-				@{o = $global:MenuCHKDSKVoltar ; a = {MenuCorrec}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-			}
-			function MenuDesfragmentacaoOtimizacao {
-				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Desfragmentação / Otimização"
-				Write-Host "Será realizada desfragmentacao em HDs e otimização em SSDs." -ForegroundColor Yellow
-				Write-Host ""
-				$global:MenuDesfragmentacaoOtimizacaoIniciar = "Iniciar"
-				$global:MenuDesfragmentacaoOtimizacaoVoltar = "Voltar"
-				$OpcoesMenu = @(
-				@{o = $global:MenuDesfragmentacaoOtimizacaoIniciar ; a = {DesfragmentacaoOtimizacao ; MenuCorrec}},
-				@{o = $global:MenuDesfragmentacaoOtimizacaoVoltar ; a = {MenuCorrec}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-			}
+					@{o = $global:MenuCHKDSKIniciar ; a = {CHKDSKOffline ; MenuCHKDSKOffline}},
+					@{o = $global:MenuCHKDSKVoltar ; a = {MenuCorrec}}
+					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+					OpcoesMenu -opcoes $OpcoesArray
+				}
+			function MenuRestauracaoStore{
+					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Restauração da Microsoft Store"
+					Write-Host "É recomendado utilizar o primeiro método. Caso não resolva, tente o segundo método." -ForegroundColor Yellow
+					Write-Host "OBS: A ação será executada imediatamente." -ForegroundColor Red
+					Write-Host ""
+					$global:MenuRestauracaoStoreWSReset = "Método 1: wsreset"
+					$global:MenuRestauracaoStoreAppx = "Método 2: Get-AppxPackage"
+					$global:MenuRestauracaoStoreVoltar = "Voltar"
+					$OpcoesMenu = @(
+						@{o = $global:MenuRestauracaoStoreWSReset ; a = {WSReset.exe ; MenuRestauracaoStore}},
+						@{o = $global:MenuRestauracaoStoreAppx ; a = {StoreAppx ; MenuRestauracaoStore}},
+						@{o = $global:MenuRestauracaoStoreVoltar ; a = {MenuCorrec}}
+					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+					OpcoesMenu -opcoes $OpcoesArray
+				}
+			function MenuIDERAIDparaAHCI{
+					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "IDE/RAID para AHCI"
+					Write-Host "Altera de IDE ou RAID para AHCI sem a necessidade de formatação." -ForegroundColor Yellow
+					Write-Host "Para realizar essa configuração, siga os passos:" -ForegroundColor Yellow
+					Write-Host "1: execute ""Executar (pré-reinicialização)""" -ForegroundColor Yellow
+					Write-Host "2: reinicie e altere na BIOS de IDE ou RAID para AHCI" -ForegroundColor Yellow
+					Write-Host "3: execute ""Executar (pós-reinicialização)""" -ForegroundColor Yellow
+					Write-Host "4: reinicie" -ForegroundColor Yellow
+					Write-Host ""
+					$global:MenuIDERAIDparaAHCIPre = "Executar (pré-reinicialização)"
+					$global:MenuIDERAIDparaAHCIPos = "Executar (pós-reinicialização)"
+					$global:MenuIDERAIDparaAHCIVoltar = "Voltar"
+					$OpcoesMenu = @(
+						@{o = $global:MenuIDERAIDparaAHCIPre ; a = {IDERAIDparaAHCIpre ; MenuReiniciar -cabecalho "Menu > Sistema > Verificações e Correções > IDE/RAID para AHCI > " -voltar MenuIDERAIDparaAHCI}},
+						@{o = $global:MenuIDERAIDparaAHCIPos ; a = {IDERAIDparaAHCIpos ; MenuIDERAIDparaAHCI}},
+						@{o = $global:MenuIDERAIDparaAHCIVoltar ; a = {MenuCorrec}}
+					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+					OpcoesMenu -opcoes $OpcoesArray
+				}
+			function MenuMBRparaGPT{
+					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "MBR para GPT"
+					Write-Host "Altera de MBR para GPT sem a necessidade de formatação." -ForegroundColor Yellow
+					Write-Host "Para realizar essa configuração, siga os passos:" -ForegroundColor Yellow
+					Write-Host "1: execute ""Executar""" -ForegroundColor Yellow
+					Write-Host "2: reinicie e altere na BIOS de Legacy para UEFI" -ForegroundColor Yellow
+					Write-Host "3: reinicie" -ForegroundColor Yellow
+					Write-Host ""
+					$global:MenuMBRparaGPTExecutar = "Executar"
+					$global:MenuMBRparaGPTvoltar = "Voltar"
+					$OpcoesMenu = @(
+						@{o = $global:MenuMBRparaGPTExecutar ; a = {MBRparaGPT ; MenuReiniciar -cabecalho "Menu > Sistema > Verificações e Correções > MBR para GPT > " -voltar MenuMBRparaGPT}},
+						@{o = $global:MenuMBRparaGPTvoltar ; a = {MenuCorrec}}
+					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+					OpcoesMenu -opcoes $OpcoesArray
+				}
 		function CTT {
 			Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
 			$global:CTTIniciar = "Iniciar"
 			$global:CTTVoltar = "Voltar"
 			$OpcoesMenu = @(
-			@{o = $global:CTTIniciar ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
-			@{o = $global:CTTVoltar ; a = {MenuSistema}}
-		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-		OpcoesMenu -opcoes $OpcoesArray
+				@{o = $global:CTTIniciar ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
+				@{o = $global:CTTVoltar ; a = {MenuSistema}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
 		}
+
 	function MenuAtivacoes {
 		Cabecalho -menu "Menu > " -submenu "Ativações"
 		$global:MenuAtivacoesWindows = "Windows"
@@ -238,8 +298,8 @@ function Menu1 {
 			@{o = $global:MenuAtivacoesVoltar ; a = {Menu1}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
-		}
-
+	}
+	
 	function MenuCustomizacoes {
 		Cabecalho -menu "Menu > " -submenu "Customizações"
 		$global:MenuCustomizacoesCursor = "Cursor"
@@ -251,6 +311,21 @@ function Menu1 {
 			@{o = $global:MenuCustomizacoesWallpaper ; a = {Wallpaper ; MenuCustomizacoes}},
 			@{o = $global:MenuCustomizacoesTerminal ; a = {Terminal ; MenuCustomizacoes}}
 			@{o = $global:MenuCustomizacoesVoltar ; a = {Menu1}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+	}
+
+	function MenuReiniciar{
+		param($cabecalho, $voltar)
+		Cabecalho -menu $cabecalho -submenu "Reiniciar"
+		Write-Host "Você deseja reiniciar o computador agora?" -ForegroundColor Yellow
+		Write-Host "OBS: o computador será reiniciado imediatanemnte." -ForegroundColor Red
+		Write-Host ""
+		$global:MenuReiniciarSim = "Reiniciar Agora"
+		$global:MenuReiniciarNao = "Reiniciar Depois"
+		$OpcoesMenu = @(
+			@{o = $global:MenuReiniciarSim ; a = {Restart-Computer}},
+			@{o = $global:MenuReiniciarNao ; a = {$voltar}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 	}
