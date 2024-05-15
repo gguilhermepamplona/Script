@@ -23,7 +23,7 @@ Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilherme
 # Correções
 Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Config.%20Sistema/Corre%C3%A7%C3%A3o.ps1" | Invoke-Expression
 # ps-menu
-Invoke-WebRequest -UseBasicParsing "" | Invoke-Expression
+Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Menu/ps-menu.ps1" | Invoke-Expression
 
 
 # if (-not (Get-Module -Name ps-menu -ListAvailable)) {
