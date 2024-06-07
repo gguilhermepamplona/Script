@@ -1,4 +1,5 @@
 # https://abre.ai/psscr
+# https://raw.githubusercontent.com/gguilhermepamplona/Script/main/Menu/MenuModulo.ps1
 # if(-not(Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)){
 # 	Write-Host "Instalando NuGet..."
 # 	Install-PackageProvider -Name NuGet -Force
@@ -35,9 +36,9 @@ function Cabecalho($menu, $submenu) {
 	Clear-Host
 	Write-Host "==========----------==========" 
 	Write-Host ""
-	Write-Host "  ┏┓ ┏┓    ┏┓ ┏┓ ┳┓ ┳ ┏┓ ┏┳┓ " -ForegroundColor DarkMagenta
-	Write-Host "  ┃┃ ┗┓ ━━ ┗┓ ┃  ┣┫ ┃ ┃┃  ┃  " -ForegroundColor DarkMagenta
-	Write-Host "  ┣┛ ┗┛    ┗┛ ┗┛ ┛┗ ┻ ┣┛  ┻  " -ForegroundColor DarkMagenta
+	Write-Host "  ┏┓ ┏┓    ┏┓ ┏┓ ┳┓ ┳ ┏┓ ┏┳┓ "
+	Write-Host "  ┃┃ ┗┓ ━━ ┗┓ ┃  ┣┫ ┃ ┃┃  ┃  "
+	Write-Host "  ┣┛ ┗┛    ┗┛ ┗┛ ┛┗ ┻ ┣┛  ┻  "
 	Write-Host ""
 	Write-Host "==========----------==========" 
 	Write-Host ""
@@ -93,14 +94,15 @@ function OpcoesMenu([array]$opcoes) {
     & ($opcoes | Where-Object {$_.o -eq $result}).a
 }
 
-
 function Menu1 {
 	Cabecalho -submenu "Menu"
 		$global:Menu1Sistema = "Sistema"
+		$global:Menu1InformacoesPC = "Informações do computador"
         $global:Menu1Ativacoes = "Ativações"
         $global:Menu1Customizacoes = "Customizações"
 	$OpcoesMenu = @(
 		@{o = $global:Menu1Sistema ; a = {MenuSistema}},
+		@{o = $global:Menu1InformacoesPC ; a = {MenuInformacoesPC ; Menu1}},
 		@{o = $global:Menu1Ativacoes ; a = {MenuAtivacoes}},
 		@{o = $global:Menu1Customizacoes ; a = {MenuCustomizacoes}}
 	) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
@@ -110,17 +112,17 @@ function Menu1 {
 		Cabecalho -menu "Menu > " -submenu "Sistema"
 			$global:MenuSistemaConfigSistema = "Configurações do sistema"
 			$global:MenuSistemaCorrecoes = "Verificações e correções"
-			$global:MenuSistemaWindowsUpdate = "Windows Update"
 			$global:MenuSistemaDesinProg = "Desinstalação de Programas"
 			$global:MenuSistemaInstProg = "Configuracoes (temporario)"
+			$global:MenuSistemaWindowsUpdate = "Windows Update"
 			$global:MenuSistemaCTT = "CTT"
 			$global:MenuSistemaVoltar = "Voltar"
 		$OpcoesMenu = @(
 			@{o = $global:MenuSistemaConfigSistema ; a = {MenuConfigSistema}},
 			@{o = $global:MenuSistemaCorrecoes ; a = {MenuCorrec ; MenuSistema}},
-			@{o = $global:MenuSistemaWindowsUpdate ; a = {WindowsUpdate ; MenuSistema}},
 			@{o = $global:MenuSistemaDesinProg ; a = {DesinstalacaoApps ; MenuSistema}}
 			@{o = $global:MenuSistemaInstProg ; a = {configuracoes ; MenuSistema}},
+			@{o = $global:MenuSistemaWindowsUpdate ; a = {WindowsUpdateCLI ; MenuSistema}},
 			@{o = $global:MenuSistemaCTT ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
 			@{o = $global:MenuSistemaVoltar ; a = {Menu1}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
@@ -128,30 +130,53 @@ function Menu1 {
 	}
 		function MenuConfigSistema {
 			Cabecalho -menu "Menu > Sistema > " -submenu "Configurações do sistema"
-			$global:MenuConfigSistemaIniciarConfig = "Iniciar configuração"
-			$global:MenuConfigSistemaAlterHost = "Alterar Hostname"
-			$global:MenuConfigSistemaSelecOpcoes = "Selecionar Opcoes"
+			Write-Host "Em desenvolvimento" -ForegroundColor Yellow
+			Write-Host ""
+			Write-Host "Selecione as configurações desejadas em 'Configurações do Windows' ou 'Configurações de Rede'," -ForegroundColor Yellow
+			Write-Host "ou execute as configurações recomendadas." -ForegroundColor Yellow
+			Write-Host ""
+			$global:MenuConfigSistemaConfigWindows = "Configurações do Windows"
+			$global:MenuConfigSistemaConfigRede = "Configurações de Rede"
+			$global:MenuConfigSistemaConfigSelecionada = "Executar configurações selecionadas"
+			$global:MenuConfigSistemaConfigRecomendada = "Executar configurações recomendadas"
 			$global:MenuConfigSistemaVoltar = "Voltar"
 			$OpcoesMenu = @(
-				@{o = $global:MenuConfigSistemaIniciarConfig ; a = {Configs ; MenuConfigSistema}},
-				@{o = $global:MenuConfigSistemaAlterHost ; a = {AlterarHostname ; MenuConfigSistema}},
-				@{o = $global:MenuConfigSistemaSelecOpcoes ; a = {MenuSelecConfigSistema}},
+				@{o = $global:MenuConfigSistemaConfigWindows ; a = {MenuSelecConfigWindows}},
+				@{o = $global:MenuConfigSistemaConfigRede ; a = {MenuSelecConfigRede}},
+				@{o = $global:MenuConfigSistemaConfigSelecionada ; a = {MenuConfigSistema}},
+				@{o = $global:MenuConfigSistemaConfigRecomendada ; a = {MenuConfigSistema}},
 				@{o = $global:MenuConfigSistemaVoltar ; a = {MenuSistema}}
 			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 			OpcoesMenu -opcoes $OpcoesArray
 			}
-			function MenuSelecConfigSistema {
-				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Selecionar"
+			function MenuSelecConfigWindows {
+				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Configurações do Windows"
+				Write-Host "Em desenvolvimento" -ForegroundColor Yellow
+				Write-Host ""
 				if (-not $MenuSelecConfigSistema){
-					$global:MenuSelecConfigSistemaIniciar = "Iniciar"
-					$global:MenuSelecConfigSistemaSelecOpcoes = "Selecionar opções"
+					$global:MenuSelecConfigSistemaIniciar = ""
+					$global:MenuSelecConfigSistemaSelecOpcoes = ""
 					$global:MenuSelecConfigSistemaVoltar = "Voltar"
 					$MenuSelecConfigSistema = $true
 				}
 				$OpcoesMenu = @(
-					@{o = $global:MenuSelecConfigSistemaIniciar ; a = {Configs ; MenuConfigSistema}},
-					@{o = $global:MenuSelecConfigSistemaSelecOpcoes ; a = {MenuSelecConfigSistema}},
-					@{o = $global:MenuSelecConfigSistemaVoltar ; a = {MenuSistema}}
+					@{o = $global:MenuSelecConfigSistemaIniciar ; a = {}},
+					@{o = $global:MenuSelecConfigSistemaSelecOpcoes ; a = {}},
+					@{o = $global:MenuSelecConfigSistemaVoltar ; a = {MenuConfigSistema}}
+				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a ; ms = $_.ms ; sa = $_.sa}}
+				OpcoesMenu -opcoes $OpcoesArray
+			}
+			function MenuSelecConfigRede {
+				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Configurações de Rede"
+				Write-Host "Em desenvolvimento" -ForegroundColor Yellow
+				Write-Host ""
+				$global:MenuSelecConfigSistemaIniciar = ""
+				$global:MenuSelecConfigSistemaSelecOpcoes = ""
+				$global:MenuSelecConfigSistemaVoltar = "Voltar"
+				$OpcoesMenu = @(
+					@{o = $global:MenuSelecConfigSistemaIniciar ; a = {}},
+					@{o = $global:MenuSelecConfigSistemaSelecOpcoes ; a = {}},
+					@{o = $global:MenuSelecConfigSistemaVoltar ; a = {MenuConfigSistema}}
 				) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a ; ms = $_.ms ; sa = $_.sa}}
 				OpcoesMenu -opcoes $OpcoesArray
 			}
@@ -225,7 +250,7 @@ function Menu1 {
 					@{o = $global:MenuCHKDSKVoltar ; a = {MenuCorrec}}
 					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 					OpcoesMenu -opcoes $OpcoesArray
-				}
+			}
 			function MenuRestauracaoStore{
 					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Restauração da Microsoft Store"
 					Write-Host "É recomendado utilizar o primeiro método. Caso não resolva, tente o segundo método." -ForegroundColor Yellow
@@ -240,7 +265,7 @@ function Menu1 {
 						@{o = $global:MenuRestauracaoStoreVoltar ; a = {MenuCorrec}}
 					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 					OpcoesMenu -opcoes $OpcoesArray
-				}
+			}
 			function MenuIDERAIDparaAHCI{
 					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "IDE/RAID para AHCI"
 					Write-Host "Altera de IDE ou RAID para AHCI sem a necessidade de formatação." -ForegroundColor Yellow
@@ -259,7 +284,7 @@ function Menu1 {
 						@{o = $global:MenuIDERAIDparaAHCIVoltar ; a = {MenuCorrec}}
 					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 					OpcoesMenu -opcoes $OpcoesArray
-				}
+			}
 			function MenuMBRparaGPT{
 					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "MBR para GPT"
 					Write-Host "Altera de MBR para GPT sem a necessidade de formatação." -ForegroundColor Yellow
@@ -275,7 +300,7 @@ function Menu1 {
 						@{o = $global:MenuMBRparaGPTvoltar ; a = {MenuCorrec}}
 					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 					OpcoesMenu -opcoes $OpcoesArray
-				}
+			}
 		function CTT {
 			Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
 			$global:CTTIniciar = "Iniciar"
@@ -286,6 +311,9 @@ function Menu1 {
 			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 			OpcoesMenu -opcoes $OpcoesArray
 		}
+	function MenuInformacoesPC {
+		
+	}	
 
 	function MenuAtivacoes {
 		Cabecalho -menu "Menu > " -submenu "Ativações"
@@ -319,13 +347,26 @@ function Menu1 {
 		param($cabecalho, $voltar)
 		Cabecalho -menu $cabecalho -submenu "Reiniciar"
 		Write-Host "Você deseja reiniciar o computador agora?" -ForegroundColor Yellow
-		Write-Host "OBS: o computador será reiniciado imediatanemnte." -ForegroundColor Red
+		Write-Host "OBS: o computador será reiniciado imediatamente." -ForegroundColor Red
 		Write-Host ""
 		$global:MenuReiniciarSim = "Reiniciar Agora"
 		$global:MenuReiniciarNao = "Reiniciar Depois"
 		$OpcoesMenu = @(
 			@{o = $global:MenuReiniciarSim ; a = {Restart-Computer}},
 			@{o = $global:MenuReiniciarNao ; a = {$voltar}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+	}
+	function MenuConfirmacao{
+		param($cabecalho, $voltar, $acao)
+		Cabecalho -menu $cabecalho -submenu "Confirmação"
+		Write-Host "Você tem certeza que deseja executar a ação selecionada?" -ForegroundColor Yellow
+		Write-Host ""
+		$global:MenuConfimacaoExecutar = "Executar"
+		$global:MenuConfirmacaoCancelar = "Cancelar"
+		$OpcoesMenu = @(
+			@{o = $global:MenuConfimacaoExecutar ; a = {}},
+			@{o = $global:MenuConfirmacaoCancelar ; a = {$voltar}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 	}
