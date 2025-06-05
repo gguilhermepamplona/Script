@@ -102,7 +102,7 @@ function Menu1 {
         $global:Menu1Customizacoes = "Customizações"
 	$OpcoesMenu = @(
 		@{o = $global:Menu1Sistema ; a = {MenuSistema}},
-		@{o = $global:Menu1InformacoesPC ; a = {MenuInformacoesPC ; Menu1}},
+		@{o = $global:Menu1InformacoesPC ; a = {MenuInformacoesPC}},
 		@{o = $global:Menu1Ativacoes ; a = {MenuAtivacoes}},
 		@{o = $global:Menu1Customizacoes ; a = {MenuCustomizacoes}}
 	) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
@@ -120,10 +120,10 @@ function Menu1 {
 		$OpcoesMenu = @(
 			@{o = $global:MenuSistemaConfigSistema ; a = {MenuConfigSistema}},
 			@{o = $global:MenuSistemaCorrecoes ; a = {MenuCorrec ; MenuSistema}},
-			@{o = $global:MenuSistemaDesinProg ; a = {DesinstalacaoApps ; MenuSistema}}
+			@{o = $global:MenuSistemaDesinProg ; a = {MenuDesinProg ; MenuSistema}}
 			@{o = $global:MenuSistemaInstProg ; a = {configuracoes ; MenuSistema}},
-			@{o = $global:MenuSistemaWindowsUpdate ; a = {WindowsUpdateCLI ; MenuSistema}},
-			@{o = $global:MenuSistemaCTT ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
+			@{o = $global:MenuSistemaWindowsUpdate ; a = {MenuWindowsUpdate ; MenuSistema}},
+			@{o = $global:MenuSistemaCTT ; a = {MenuCTT ; MenuSistema}},
 			@{o = $global:MenuSistemaVoltar ; a = {Menu1}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
@@ -301,8 +301,36 @@ function Menu1 {
 					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 					OpcoesMenu -opcoes $OpcoesArray
 			}
-		function CTT {
+		function MenuDesinProg {
+			Cabecalho -menu "Menu > Sistema > " -submenu "Desinstalação de Programas"
+			Write-Host "Desinstalação de programas inúteis do Windows." -ForegroundColor Yellow
+			Write-Host "Não é possível selecionar programas específicos, por enquanto. Funcionalidade em desenvolvimento." -ForegroundColor Yellow
+			Write-Host ""
+			$global:MenuDesinProgIniciar = "Iniciar"
+			$global:MenuDesinProgVoltar = "Voltar"
+			$OpcoesMenu = @(
+				@{o = $global:MenuDesinProgIniciar ; a = {DesinstalacaoApps ; MenuDesinstalacaoApps}},
+				@{o = $global:MenuDesinProgVoltar ; a = {MenuSistema}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+		}
+		function MenuWindowsUpdate {
+			Cabecalho -menu "Menu > Sistema > " -submenu "Windows Update"
+			Write-Host "Atualização do Windows através do Powershell." -ForegroundColor Yellow
+			Write-Host ""
+			$global:WindowsUpdateIniciar = "Iniciar"
+			$global:WindowsUpdateVoltar = "Voltar"
+			$OpcoesMenu = @(
+				@{o = $global:WindowsUpdateIniciar ; a = {WindowsUpdateCLI ; MenuSistema}},
+				@{o = $global:WindowsUpdateVoltar ; a = {MenuSistema}}
+			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+			OpcoesMenu -opcoes $OpcoesArray
+		}
+		function MenuCTT {
 			Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
+			Write-Host "CTT (Chris Titus Tech) é um programa desenvolvido em Powershell com uma vasta quantidade de otimizações para o Windows." -ForegroundColor Yellow
+			Write-Host "É recomendada a sua utilização pois nem todas opções estão contidas neste script, por enquanto." -ForegroundColor Yellow
+			Write-Host ""
 			$global:CTTIniciar = "Iniciar"
 			$global:CTTVoltar = "Voltar"
 			$OpcoesMenu = @(
@@ -312,9 +340,15 @@ function Menu1 {
 			OpcoesMenu -opcoes $OpcoesArray
 		}
 	function MenuInformacoesPC {
-		
-	}	
-
+		Cabecalho -menu "Menu > " -submenu "Informações do computador"
+		$global:MenuInformacoesPCExibInfo = "Exibir informações"
+		$global:MenuInformacoesPCVoltar = "Voltar"
+		$OpcoesMenu = @(
+			@{o = $global:MenuInformacoesPCExibInfo ; a = {InformacoesPC ; MenuInformacoesPC}},
+			@{o = $global:MenuInformacoesPCVoltar ; a = {Menu1}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+	}
 	function MenuAtivacoes {
 		Cabecalho -menu "Menu > " -submenu "Ativações"
 		$global:MenuAtivacoesWindows = "Windows"
@@ -327,7 +361,6 @@ function Menu1 {
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 	}
-	
 	function MenuCustomizacoes {
 		Cabecalho -menu "Menu > " -submenu "Customizações"
 		$global:MenuCustomizacoesCursor = "Cursor"
@@ -342,7 +375,6 @@ function Menu1 {
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 	}
-
 	function MenuReiniciar{
 		param($cabecalho, $voltar)
 		Cabecalho -menu $cabecalho -submenu "Reiniciar"

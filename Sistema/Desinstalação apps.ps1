@@ -1,3 +1,4 @@
+# Falta Cortana e Copilot
 function DesinstalacaoApps {
 # Desinstala o OneDrive
 function DesinstalarOnedriveConfigIni{
