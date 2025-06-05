@@ -58,40 +58,15 @@ function Cabecalho($menu, $submenu) {
 # }
 
 function OpcoesMenu([array]$opcoes) {
-    [string]$result = Menu -menuItems ($opcoes.o)
-    $VariavelAtual = $opcoes | Where-Object {$_.o -eq $result}
-    $NomeVariavelAtual = (Get-Variable -Scope Global | Where-Object { $_.Value -eq "$result" -and $_.Value -isnot [bool]}).Name
-    function OpcoesSelecionadas($sel, $var, $var2) {
-        [string]$AlteraVar = $var.Value
-        $a = $AlteraVar.ToCharArray() ; $a[1] = "$sel" ; $a = -join $a ; Set-Variable -Name $var2 -Value $a -Scope Global
-    }
-    if ($result -like "[x]*") {
-        $result = $result.Replace("[x]", "[ ]")
-    }
-    if ($VariavelAtual.ms) {
-        if ($VariavelAtual.sa){
-            if ($VariavelAtual.o.Substring(1,1) -eq " "){
-                $b = ($OpcoesMenu | Where-Object {$_.ms -eq $true}).o
-                foreach ($j in $b) {
-                    $k = (Get-Variable -Scope Global | Where-Object { $_.Value -eq "$j" -and $_.Value -isnot [bool]})
-                    OpcoesSelecionadas -sel "x" -var $k -var2 $k.Name
-                }
-            } else {
-                $b = ($OpcoesMenu | Where-Object {$_.ms -eq $true}).o
-                foreach ($j in $b) {
-                    $k = (Get-Variable -Scope Global | Where-Object { $_.Value -eq "$j" -and $_.Value -isnot [bool]})
-                    OpcoesSelecionadas -sel " " -var $k -var2 $k.Name
-                }
-            }
-        } else {
-            if ($result.Substring(1,1) -ne "x") {
-                OpcoesSelecionadas -sel "x" -var $(Get-Variable -Name $NomeVariavelAtual) -var2 $NomeVariavelAtual
-            } else {
-                OpcoesSelecionadas -sel " " -var $(Get-Variable -Name $NomeVariavelAtual) -var2 $NomeVariavelAtual
-            }
+    $result = Menu -menuItems ($opcoes.o)
+    if ($null -ne $result) {
+        $acao = ($opcoes | Where-Object {$_.o -eq $result}).a
+        if ($acao) {
+            & $acao
         }
+    } else {
+        Write-Host "Operação cancelada pelo usuário." -ForegroundColor Yellow
     }
-    & ($opcoes | Where-Object {$_.o -eq $result}).a
 }
 
 function Menu1 {

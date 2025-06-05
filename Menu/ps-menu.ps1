@@ -4,8 +4,8 @@
 function DrawMenu {
     param ($menuItems, $menuPosition, $Multiselect, $selection)
     $l = $menuItems.length
-    for ($i = 0; $i -le $l;$i++) {
-		if ($menuItems[$i] -ne $null){
+    for ($i = 0; $i -lt $l;$i++) {
+		if ($null -ne $menuItems[$i]){
 			$item = $menuItems[$i]
 			if ($Multiselect)
 			{
@@ -25,10 +25,10 @@ function DrawMenu {
     }
 }
 
-function Toggle-Selection {
+function Switch-Selection {
 	param ($pos, [array]$selection)
 	if ($selection -contains $pos){ 
-		$result = $selection | where {$_ -ne $pos}
+		$result = $selection | Where-Object {$_ -ne $pos}
 	}
 	else {
 		$selection += $pos
@@ -51,11 +51,11 @@ function Menu {
 			While ($vkeycode -ne 13 -and $vkeycode -ne 27) {
 				$press = $host.ui.rawui.readkey("NoEcho,IncludeKeyDown")
 				$vkeycode = $press.virtualkeycode
-				If ($vkeycode -eq 38 -or $press.Character -eq 'k') {$pos--}
-				If ($vkeycode -eq 40 -or $press.Character -eq 'j') {$pos++}
+				If ($vkeycode -eq 38) {$pos--}
+				If ($vkeycode -eq 40) {$pos++}
 				If ($vkeycode -eq 36) { $pos = 0 }
 				If ($vkeycode -eq 35) { $pos = $menuItems.length - 1 }
-				If ($press.Character -eq ' ') { $selection = Toggle-Selection $pos $selection }
+				If ($press.Character -eq ' ') { $selection = Switch-Selection $pos $selection }
 				if ($pos -lt 0) {$pos = 0}
 				If ($vkeycode -eq 27) {$pos = $null }
 				if ($pos -ge $menuItems.length) {$pos = $menuItems.length -1}
@@ -76,7 +76,7 @@ function Menu {
 		$pos = $null
 	}
 
-    if ($ReturnIndex -eq $false -and $pos -ne $null)
+	if ($ReturnIndex -eq $false -and $null -ne $pos)
 	{
 		if ($Multiselect){
 			return $menuItems[$selection]
