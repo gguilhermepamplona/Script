@@ -88,8 +88,8 @@ function InfoPCCPU {
             $PCCPURevisao = if ($cpu.Revision) { $cpu.Revision } else { "N/A" }
             $PCCPUID = if ($cpu.ProcessorId) { $cpu.ProcessorId } else { "N/A" }
             $PCCPUStatus = if ($cpu.Status) { $cpu.Status } else { "N/A" }
-            Write-Host "Nome: $PCCPUNome"
             $Saida += "Informações da CPU:"
+            $Saida += "  Nome: $PCCPUNome"
             $Saida += "  Clock Máximo: $PCCPUClock MHz"
             $Saida += "  Cores: $PCCPUCores"
             $Saida += "  Threads: $PCCPUThreads"
