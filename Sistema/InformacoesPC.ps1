@@ -300,5 +300,5 @@ $InfoFuncoes += InfoPCGPU
 $InfoFuncoes += InfoPCArmazenamento
 $InfoFuncoes += InfoPCRede
 Add-Content -Path $DirArquivo -Value $InfoFuncoes
-Start-Process notepad.exe "$DirArquivo"
+Start-Process notepad.exe "$DirArquivo" -WindowStyle Maximized
 }
