@@ -96,8 +96,8 @@ function OpcoesMenu([array]$opcoes) {
 
 function Menu1 {
 	Cabecalho -submenu "Menu"
-		$global:Menu1Sistema = "Sistema"
-		$global:Menu1InformacoesPC = "Informações do computador"
+		$global:Menu1Sistema = "Sistema *"
+		$global:Menu1InformacoesPC = "Informações do computador *"
         $global:Menu1Ativacoes = "Ativações"
         $global:Menu1Customizacoes = "Customizações"
 	$OpcoesMenu = @(
@@ -110,31 +110,29 @@ function Menu1 {
 }
 	function MenuSistema {
 		Cabecalho -menu "Menu > " -submenu "Sistema"
-			$global:MenuSistemaConfigSistema = "Configurações do sistema"
+			$global:MenuSistemaConfigSistema = "Configurações do sistema *"
 			$global:MenuSistemaCorrecoes = "Verificações e correções"
-			$global:MenuSistemaDesinProg = "Desinstalação de Programas"
-			$global:MenuSistemaInstProg = "Configuracoes (temporario)"
+			$global:MenuSistemaDesinProg = "Desinstalação de Programas *"
+			$global:MenuSistemaInstProg = "Configuracoes (temporario - apagar em breve)"
 			$global:MenuSistemaWindowsUpdate = "Windows Update"
 			$global:MenuSistemaCTT = "CTT"
 			$global:MenuSistemaVoltar = "Voltar"
 		$OpcoesMenu = @(
 			@{o = $global:MenuSistemaConfigSistema ; a = {MenuConfigSistema}},
 			@{o = $global:MenuSistemaCorrecoes ; a = {MenuCorrec ; MenuSistema}},
-			@{o = $global:MenuSistemaDesinProg ; a = {MenuDesinProg ; MenuSistema}}
+			@{o = $global:MenuSistemaDesinProg ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Desinstalação de programas inúteis do Windows.`nNão é possível selecionar programas específicos, por enquanto. Funcionalidade em desenvolvimento.`nPara desinstalação mais completa (registro do SO), utilize o Revo Uninstaller." -cabecalho "Menu > Sistema > " -submenu "Desinstalação de Programas" -voltar MenuSistema -acao DesinstalacaoApps ; MenuSistema}}
 			@{o = $global:MenuSistemaInstProg ; a = {configuracoes ; MenuSistema}},
-			@{o = $global:MenuSistemaWindowsUpdate ; a = {MenuWindowsUpdate ; MenuSistema}},
-			@{o = $global:MenuSistemaCTT ; a = {MenuCTT ; MenuSistema}},
+			@{o = $global:MenuSistemaWindowsUpdate ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Atualização do Windows através do Powershell." -cabecalho "Menu > Sistema > " -submenu "Windows Update" -voltar MenuSistema -acao WindowsUpdateCLI ; MenuSistema}},
+			@{o = $global:MenuSistemaCTT ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "CTT (Chris Titus Tech) é um programa desenvolvido em Powershell com uma vasta quantidade de otimizações para o Windows.`nÉ recomendada a sua utilização pois nem todas opções estão contidas neste script, por enquanto." -cabecalho "Menu > Sistema > " -submenu "CTT" -voltar MenuSistema -acao {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression} ; MenuSistema}},
 			@{o = $global:MenuSistemaVoltar ; a = {Menu1}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 	}
 		function MenuConfigSistema {
 			Cabecalho -menu "Menu > Sistema > " -submenu "Configurações do sistema"
-			Write-Host "Em desenvolvimento" -ForegroundColor Yellow
-			Write-Host ""
+			Write-Host "Em desenvolvimento`n" -ForegroundColor Yellow
 			Write-Host "Selecione as configurações desejadas em 'Configurações do Windows' ou 'Configurações de Rede'," -ForegroundColor Yellow
-			Write-Host "ou execute as configurações recomendadas." -ForegroundColor Yellow
-			Write-Host ""
+			Write-Host "ou execute as configurações recomendadas.`n" -ForegroundColor Yellow
 			$global:MenuConfigSistemaConfigWindows = "Configurações do Windows"
 			$global:MenuConfigSistemaConfigRede = "Configurações de Rede"
 			$global:MenuConfigSistemaConfigSelecionada = "Executar configurações selecionadas"
@@ -151,8 +149,7 @@ function Menu1 {
 			}
 			function MenuSelecConfigWindows {
 				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Configurações do Windows"
-				Write-Host "Em desenvolvimento" -ForegroundColor Yellow
-				Write-Host ""
+				Write-Host "Em desenvolvimento`n" -ForegroundColor Yellow
 				if (-not $MenuSelecConfigSistema){
 					$global:MenuSelecConfigSistemaIniciar = ""
 					$global:MenuSelecConfigSistemaSelecOpcoes = ""
@@ -168,8 +165,7 @@ function Menu1 {
 			}
 			function MenuSelecConfigRede {
 				Cabecalho -menu "Menu > Sistema > Configurações do sistema > " -submenu "Configurações de Rede"
-				Write-Host "Em desenvolvimento" -ForegroundColor Yellow
-				Write-Host ""
+				Write-Host "Em desenvolvimento`n" -ForegroundColor Yellow
 				$global:MenuSelecConfigSistemaIniciar = ""
 				$global:MenuSelecConfigSistemaSelecOpcoes = ""
 				$global:MenuSelecConfigSistemaVoltar = "Voltar"
@@ -191,77 +187,27 @@ function Menu1 {
 		$global:MenuCorrecMBRparaGPT = "MBR para GPT"
 		$global:MenuCorrecVoltar = "Voltar"
 		$OpcoesMenu = @(
-			@{o = $global:MenuCorrecDefrag ; a = {MenuDesfragmentacaoOtimizacao}},
-			@{o = $global:MenuCorrecSFCDISM ; a = {MenuSFCDISM}},
-			@{o = $global:MenuCorrecCHKDSKOn ; a = {MenuCHKDSKOnline}},
-			@{o = $global:MenuCorrecCHKDSKOff ; a = {MenuCHKDSKOffline}},
+			@{o = $global:MenuCorrecDefrag ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Será realizada desfragmentacao em HDs e otimização em SSDs." -cabecalho "Menu > Sistema > Verificações e Correções > " -submenu "Desfragmentação / Otimização"-voltar MenuCorrec -acao DesfragmentacaoOtimizacao ; MenuCorrec}},
+			@{o = $global:MenuCorrecSFCDISM ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Será executado ""Repair-WindowsImage"", no qual é equivalente ao sfc e dism." -cabecalho "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do sistema de arquivos do Windows" -voltar MenuCorrec -acao SFCDISM ; MenuCorrec}},
+			@{o = $global:MenuCorrecCHKDSKOn ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Será executado ""Repair-Volume"" online (dentro do sistema), no qual é equivalente ao chkdsk." -cabecalho "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do disco online" -voltar MenuCorrec -acao CHKDSKOnline ; MenuCorrec}},
+			@{o = $global:MenuCorrecCHKDSKOff ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Será executado ""Repair-Volume"" offline (fora do sistema), no qual é equivalente ao chkdsk." -cabecalho "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do disco offline" -voltar MenuCorrec -acao CHKDSKOffline ; MenuCorrec}},
 			@{o = $global:MenuCorrecRestauracaoStore ; a = {MenuRestauracaoStore}},
 			@{o = $global:MenuCorrecIDERAIDparaAHCI ; a = {MenuIDERAIDparaAHCI}},
-			@{o = $global:MenuCorrecMBRparaGPT ; a = {MenuMBRparaGPT}},
+			@{o = $global:MenuCorrecMBRparaGPT ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Altera de MBR para GPT sem a necessidade de formatação.`nPara realizar essa configuração, siga os passos:`n1: execute ""Executar""`n2: reinicie e altere na BIOS de Legacy para UEFI`n3: reinicie" -cabecalho "Menu > Sistema > Verificações e Correções > " -submenu "MBR para GPT" -voltar MenuCorrec -acao MBRparaGPT ; MenuCorrec}},
 			@{o = $global:MenuCorrecVoltar ; a = {MenuSistema}}
 			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 		}
-			function MenuDesfragmentacaoOtimizacao {
-				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Desfragmentação / Otimização"
-				Write-Host "Será realizada desfragmentacao em HDs e otimização em SSDs." -ForegroundColor Yellow
-				Write-Host ""
-				$global:MenuDesfragmentacaoOtimizacaoIniciar = "Iniciar"
-				$global:MenuDesfragmentacaoOtimizacaoVoltar = "Voltar"
-				$OpcoesMenu = @(
-				@{o = $global:MenuDesfragmentacaoOtimizacaoIniciar ; a = {DesfragmentacaoOtimizacao ; MenuCorrec}},
-				@{o = $global:MenuDesfragmentacaoOtimizacaoVoltar ; a = {MenuCorrec}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-			}
-			function MenuSFCDISM {
-				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do sistema de arquivos do Windows"
-				Write-Host "Será executado ""Repair-WindowsImage"", no qual é equivalente ao sfc e dism." -ForegroundColor Yellow
-				Write-Host ""
-				$global:MenuSFCDISMIniciar = "Iniciar"
-				$global:MenuSFCDISMVoltar = "Voltar"
-				$OpcoesMenu = @(
-				@{o = $global:MenuSFCDISMIniciar ; a = {SFCDISM ; MenuSFCDISM}},
-				@{o = $global:MenuSFCDISMVoltar ; a = {MenuCorrec}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-			}
-			function MenuCHKDSKOnline {
-				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do disco online"
-				Write-Host "Será executado ""Repair-Volume"" online (dentro do sistema), no qual é equivalente ao chkdsk." -ForegroundColor Yellow
-				Write-Host ""
-				$global:MenuCHKDSKIniciar = "Iniciar"
-				$global:MenuCHKDSKVoltar = "Voltar"
-				$OpcoesMenu = @(
-				@{o = $global:MenuCHKDSKIniciar ; a = {CHKDSKOnline ; MenuCHKDSKOnline}},
-				@{o = $global:MenuCHKDSKVoltar ; a = {MenuCorrec}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-			}
-			function MenuCHKDSKOffline {
-				Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Verificação e reparação do disco offline"
-				Write-Host "Será executado ""Repair-Volume"" offline (fora do sistema), no qual é equivalente ao chkdsk." -ForegroundColor Yellow
-				Write-Host "OBS: será agendado um chkdsk antes da inicialização do sistema para a próxima reinicialização." -ForegroundColor Yellow
-				Write-Host ""
-				$global:MenuCHKDSKIniciar = "Iniciar"
-				$global:MenuCHKDSKVoltar = "Voltar"
-				$OpcoesMenu = @(
-					@{o = $global:MenuCHKDSKIniciar ; a = {CHKDSKOffline ; MenuCHKDSKOffline}},
-					@{o = $global:MenuCHKDSKVoltar ; a = {MenuCorrec}}
-					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-					OpcoesMenu -opcoes $OpcoesArray
-			}
 			function MenuRestauracaoStore{
 					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Restauração da Microsoft Store"
 					Write-Host "É recomendado utilizar o primeiro método. Caso não resolva, tente o segundo método." -ForegroundColor Yellow
-					Write-Host "OBS: A ação será executada imediatamente." -ForegroundColor Red
-					Write-Host ""
+					Write-Host "OBS: A ação será executada imediatamente.`n" -ForegroundColor Red
 					$global:MenuRestauracaoStoreWSReset = "Método 1: wsreset"
 					$global:MenuRestauracaoStoreAppx = "Método 2: Get-AppxPackage"
 					$global:MenuRestauracaoStoreVoltar = "Voltar"
 					$OpcoesMenu = @(
-						@{o = $global:MenuRestauracaoStoreWSReset ; a = {WSReset.exe ; MenuRestauracaoStore}},
-						@{o = $global:MenuRestauracaoStoreAppx ; a = {StoreAppx ; MenuRestauracaoStore}},
+						@{o = $global:MenuRestauracaoStoreWSReset ; a = {MenuConfirmacao -cabecalho "Menu > Sistema > Verificações e Correções > Restauração da Microsoft Store > " -submenu "Método 1: wsreset" -voltar MenuRestauracaoStore -acao WSReset.exe ; MenuRestauracaoStore}},
+						@{o = $global:MenuRestauracaoStoreAppx ; a = {MenuConfirmacao -cabecalho "Menu > Sistema > Verificações e Correções > Restauração da Microsoft Store > " -submenu "Método 2: Get-AppxPackage" -voltar MenuRestauracaoStore -acao StoreAppx ; MenuRestauracaoStore}},
 						@{o = $global:MenuRestauracaoStoreVoltar ; a = {MenuCorrec}}
 					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 					OpcoesMenu -opcoes $OpcoesArray
@@ -270,77 +216,23 @@ function Menu1 {
 					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "IDE/RAID para AHCI"
 					Write-Host "Altera de IDE ou RAID para AHCI sem a necessidade de formatação." -ForegroundColor Yellow
 					Write-Host "Para realizar essa configuração, siga os passos:" -ForegroundColor Yellow
-					Write-Host "1: execute ""Executar (pré-reinicialização)""" -ForegroundColor Yellow
+					Write-Host "1: execute ""Executar pré-reinicialização""" -ForegroundColor Yellow
 					Write-Host "2: reinicie e altere na BIOS de IDE ou RAID para AHCI" -ForegroundColor Yellow
-					Write-Host "3: execute ""Executar (pós-reinicialização)""" -ForegroundColor Yellow
-					Write-Host "4: reinicie" -ForegroundColor Yellow
-					Write-Host ""
-					$global:MenuIDERAIDparaAHCIPre = "Executar (pré-reinicialização)"
-					$global:MenuIDERAIDparaAHCIPos = "Executar (pós-reinicialização)"
+					Write-Host "3: execute ""Executar pós-reinicialização""" -ForegroundColor Yellow
+					Write-Host "4: reinicie`n" -ForegroundColor Yellow
+					$global:MenuIDERAIDparaAHCIPre = "Executar pré-reinicialização"
+					$global:MenuIDERAIDparaAHCIPos = "Executar pós-reinicialização"
 					$global:MenuIDERAIDparaAHCIVoltar = "Voltar"
 					$OpcoesMenu = @(
-						@{o = $global:MenuIDERAIDparaAHCIPre ; a = {IDERAIDparaAHCIpre ; MenuReiniciar -cabecalho "Menu > Sistema > Verificações e Correções > IDE/RAID para AHCI > " -voltar MenuIDERAIDparaAHCI}},
-						@{o = $global:MenuIDERAIDparaAHCIPos ; a = {IDERAIDparaAHCIpos ; MenuIDERAIDparaAHCI}},
+						@{o = $global:MenuIDERAIDparaAHCIPre ; a = {MenuConfirmacao -cabecalho "Menu > Sistema > Verificações e Correções > IDE/RAID para AHCI > " -submenu "Executar pré-reinicialização" -voltar MenuIDERAIDparaAHCI -acao IDERAIDparaAHCIpre ; if($global:v -eq 1){MenuReiniciar -cabecalho "Menu > Sistema > Verificações e Correções > IDE/RAID para AHCI > Executar pré-reinicialização > " -submenu "Reiniciar" -voltar MenuIDERAIDparaAHCI}}},
+						@{o = $global:MenuIDERAIDparaAHCIPos ; a = {MenuConfirmacao -cabecalho "Menu > Sistema > Verificações e Correções > IDE/RAID para AHCI > " -submenu "Executar pós-reinicialização" -voltar MenuIDERAIDparaAHCI -acao IDERAIDparaAHCIpos ; MenuIDERAIDparaAHCI}},
 						@{o = $global:MenuIDERAIDparaAHCIVoltar ; a = {MenuCorrec}}
 					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 					OpcoesMenu -opcoes $OpcoesArray
 			}
-			function MenuMBRparaGPT{
-					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "MBR para GPT"
-					Write-Host "Altera de MBR para GPT sem a necessidade de formatação." -ForegroundColor Yellow
-					Write-Host "Para realizar essa configuração, siga os passos:" -ForegroundColor Yellow
-					Write-Host "1: execute ""Executar""" -ForegroundColor Yellow
-					Write-Host "2: reinicie e altere na BIOS de Legacy para UEFI" -ForegroundColor Yellow
-					Write-Host "3: reinicie" -ForegroundColor Yellow
-					Write-Host ""
-					$global:MenuMBRparaGPTExecutar = "Executar"
-					$global:MenuMBRparaGPTvoltar = "Voltar"
-					$OpcoesMenu = @(
-						@{o = $global:MenuMBRparaGPTExecutar ; a = {MBRparaGPT ; MenuReiniciar -cabecalho "Menu > Sistema > Verificações e Correções > MBR para GPT > " -voltar MenuMBRparaGPT}},
-						@{o = $global:MenuMBRparaGPTvoltar ; a = {MenuCorrec}}
-					) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-					OpcoesMenu -opcoes $OpcoesArray
-			}
-		function MenuDesinProg {
-			Cabecalho -menu "Menu > Sistema > " -submenu "Desinstalação de Programas"
-			Write-Host "Desinstalação de programas inúteis do Windows." -ForegroundColor Yellow
-			Write-Host "Não é possível selecionar programas específicos, por enquanto. Funcionalidade em desenvolvimento." -ForegroundColor Yellow
-			Write-Host ""
-			$global:MenuDesinProgIniciar = "Iniciar"
-			$global:MenuDesinProgVoltar = "Voltar"
-			$OpcoesMenu = @(
-				@{o = $global:MenuDesinProgIniciar ; a = {DesinstalacaoApps ; MenuDesinstalacaoApps}},
-				@{o = $global:MenuDesinProgVoltar ; a = {MenuSistema}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-		}
-		function MenuWindowsUpdate {
-			Cabecalho -menu "Menu > Sistema > " -submenu "Windows Update"
-			Write-Host "Atualização do Windows através do Powershell." -ForegroundColor Yellow
-			Write-Host ""
-			$global:WindowsUpdateIniciar = "Iniciar"
-			$global:WindowsUpdateVoltar = "Voltar"
-			$OpcoesMenu = @(
-				@{o = $global:WindowsUpdateIniciar ; a = {WindowsUpdateCLI ; MenuSistema}},
-				@{o = $global:WindowsUpdateVoltar ; a = {MenuSistema}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-		}
-		function MenuCTT {
-			Cabecalho -menu "Menu > Sistema > " -submenu "CTT"
-			Write-Host "CTT (Chris Titus Tech) é um programa desenvolvido em Powershell com uma vasta quantidade de otimizações para o Windows." -ForegroundColor Yellow
-			Write-Host "É recomendada a sua utilização pois nem todas opções estão contidas neste script, por enquanto." -ForegroundColor Yellow
-			Write-Host ""
-			$global:CTTIniciar = "Iniciar"
-			$global:CTTVoltar = "Voltar"
-			$OpcoesMenu = @(
-				@{o = $global:CTTIniciar ; a = {Invoke-WebRequest -UseBasicParsing https://christitus.com/win | Invoke-Expression ; MenuSistema}},
-				@{o = $global:CTTVoltar ; a = {MenuSistema}}
-			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-			OpcoesMenu -opcoes $OpcoesArray
-		}
 	function MenuInformacoesPC {
 		Cabecalho -menu "Menu > " -submenu "Informações do computador"
+		Write-Host "Gera um relatório com todas as informações do computador.`n" -ForegroundColor Yellow
 		$global:MenuInformacoesPCExibInfo = "Exibir informações"
 		$global:MenuInformacoesPCVoltar = "Voltar"
 		$OpcoesMenu = @(
@@ -355,8 +247,8 @@ function Menu1 {
 		$global:MenuAtivacoesOffice = "Office"
 		$global:MenuAtivacoesVoltar = "Voltar"
 		$OpcoesMenu = @(
-			@{o = $global:MenuAtivacoesWindows ; a = {AtivacaoWindows ; MenuAtivacoes}},
-			@{o = $global:MenuAtivacoesOffice ; a = {MenuAtivacoes}},
+			@{o = $global:MenuAtivacoesWindows ; a = {MenuConfirmacao -cabecalho "Menu > Ativações > " -submenu "Windows" -voltar MenuAtivacoes -acao AtivacaoWindows ; MenuAtivacoes}},
+			@{o = $global:MenuAtivacoesOffice ; a = {MenuConfirmacao -cabecalho "Menu > Ativações > " -submenu "Office" -voltar MenuAtivacoes -acao AtivacaoOffice ; MenuAtivacoes}},
 			@{o = $global:MenuAtivacoesVoltar ; a = {Menu1}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
@@ -375,30 +267,32 @@ function Menu1 {
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 	}
+	function MenuConfirmacao{
+		param($confirmacaodescricao, $descricao, $cabecalho, $submenu, $voltar, $acao)
+		Cabecalho -menu $cabecalho -submenu $submenu
+		if ($confirmacaodescricao -eq 1){
+			Write-Host $descricao`n -ForegroundColor Yellow
+		} else {
+			Write-Host "Você tem certeza que deseja executar a ação selecionada?`n" -ForegroundColor Yellow
+		}
+		$global:MenuConfimacaoExecutar = "Executar"
+		$global:MenuConfirmacaoCancelar = "Cancelar"
+		$OpcoesMenu = @(
+			@{o = $global:MenuConfimacaoExecutar ; a = {$global:v = 1 ; & $acao}},
+			@{o = $global:MenuConfirmacaoCancelar ; a = {$global:v = 0 ; & $voltar}}
+		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
+		OpcoesMenu -opcoes $OpcoesArray
+	}
 	function MenuReiniciar{
-		param($cabecalho, $voltar)
-		Cabecalho -menu $cabecalho -submenu "Reiniciar"
+		param($cabecalho, $submenu, $voltar)
+		Cabecalho -menu $cabecalho -submenu $submenu
 		Write-Host "Você deseja reiniciar o computador agora?" -ForegroundColor Yellow
-		Write-Host "OBS: o computador será reiniciado imediatamente." -ForegroundColor Red
-		Write-Host ""
+		Write-Host "OBS: o computador será reiniciado imediatamente.`n" -ForegroundColor Red
 		$global:MenuReiniciarSim = "Reiniciar Agora"
 		$global:MenuReiniciarNao = "Reiniciar Depois"
 		$OpcoesMenu = @(
 			@{o = $global:MenuReiniciarSim ; a = {Restart-Computer}},
-			@{o = $global:MenuReiniciarNao ; a = {$voltar}}
-		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-		OpcoesMenu -opcoes $OpcoesArray
-	}
-	function MenuConfirmacao{
-		param($cabecalho, $voltar, $acao)
-		Cabecalho -menu $cabecalho -submenu "Confirmação"
-		Write-Host "Você tem certeza que deseja executar a ação selecionada?" -ForegroundColor Yellow
-		Write-Host ""
-		$global:MenuConfimacaoExecutar = "Executar"
-		$global:MenuConfirmacaoCancelar = "Cancelar"
-		$OpcoesMenu = @(
-			@{o = $global:MenuConfimacaoExecutar ; a = {}},
-			@{o = $global:MenuConfirmacaoCancelar ; a = {$voltar}}
+			@{o = $global:MenuReiniciarNao ; a = {& $voltar}}
 		) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
 		OpcoesMenu -opcoes $OpcoesArray
 	}
