@@ -57,8 +57,12 @@ function Cabecalho($menu, $submenu) {
 # 	& ($opcoes | Where-Object {$_.o -eq $result}).a
 # }
 
-function OpcoesMenu([array]$opcoes) {
-    $result = Menu -menuItems ($opcoes.o)
+function OpcoesMenu([array]$opcoes, [switch]$Multiselect) {
+	if ($Multiselect) {
+		$result = Menu -menuItems ($opcoes.o) -Multiselect
+	} else {
+		$result = Menu -menuItems ($opcoes.o)
+	}
     if ($null -ne $result) {
         $acao = ($opcoes | Where-Object {$_.o -eq $result}).a
         if ($acao) {
@@ -171,7 +175,11 @@ function Menu1 {
 			@{o = $global:MenuCorrecMBRparaGPT ; a = {MenuConfirmacao -confirmacaodescricao 1 -descricao "Altera de MBR para GPT sem a necessidade de formatação.`nPara realizar essa configuração, siga os passos:`n1: execute ""Executar""`n2: reinicie e altere na BIOS de Legacy para UEFI`n3: reinicie" -cabecalho "Menu > Sistema > Verificações e Correções > " -submenu "MBR para GPT" -voltar MenuCorrec -acao MBRparaGPT ; MenuCorrec}},
 			@{o = $global:MenuCorrecVoltar ; a = {MenuSistema}}
 			) ; $OpcoesArray = $OpcoesMenu | ForEach-Object { @{o = $_.o ; a = $_.a}}
-		OpcoesMenu -opcoes $OpcoesArray
+		$retorno = OpcoesMenu -opcoes $OpcoesArray
+		if ($retorno -eq "backspace") {
+		MenuSistema
+		return
+		}
 		}
 			function MenuRestauracaoStore{
 					Cabecalho -menu "Menu > Sistema > Verificações e Correções > " -submenu "Restauração da Microsoft Store"
